@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FlyShoes.Common.Models;
+using FlyShoes.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System;
@@ -11,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Repository.Base
 {
-    public class BaseRepository<Entity> : IBaseRepository<Entity>
+    public class DatabaseService<Entity> : IDatabaseService<Entity>
     {
-        protected string connectString;
-        public BaseRepository(IConfiguration configuration) {
+        protected string? connectString;
+        public DatabaseService(IConfiguration configuration)
+        {
             connectString = configuration.GetConnectionString("DefaultConnection");
         }
 
@@ -36,10 +38,8 @@ namespace FlyShoes.Repository.Base
             {
                 {"UserID",2 }
             };
-
-            var result = connection.QuerySingle<List<Entity>>("Proc_user_GetAll",param:param, commandType:CommandType.StoredProcedure).ToList();
-
-            return result;
+            var result = await connection.QueryAsync<List<Entity>>("Proc_user_GetAll",param:param, commandType:CommandType.StoredProcedure);
+            return (List<Entity>)result;
         }
 
         public Task<Entity> GetByID(string id)

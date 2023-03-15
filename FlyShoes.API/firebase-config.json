@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "fly-shoes-store",
+  "private_key_id": "775bff2ac465a5ab15ef4500624715b77d3c7554",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYZP9aIoltzTNF\nCaO3uyU8HHY07sThwWM6o6bjCUYXxB2jIm+NHqrvKFcWkf3NmdGtM7izNOpLK+de\nBF7ueAPJBGVRVxMwp50nebN0MHSgu1lvaSiuc8ogcSFw5NdGIE/rrzPLqyrkJqA7\nr4mewmW9SB7pPtLSDon4oyLyeMVIptndzUFR/TeW2ymMwh0/jBnFbvK1w6OhDmvw\n5yGLsSMFp3FRAxlOAeIKowF9B/nXtJb72gN8oQHQeq3kIMJsCOmk02alONcLQs10\nfV63+wTumrZTIQB3gRuUj4kvBDJ8xdjpHgGIV6R8ujdn7wie7rzrXqeuRgkgG6wA\nYEf2T5iXAgMBAAECggEAFAkB2s1mI6xDP3SdhmYwPokKFBY5VLJMPC0pHKM1V1T5\nQ4CYNceC9GKr8YiHKGaXUxh9/4Wk3bHibuzWV0ZLChe7Q7/dTydtta50buEKTf7F\nUJCQINrSpOn55Sh4RWNk0uxP+N76Y9EEYTz8RR6NlJayr04kRH5DyFQJE8xvw61C\nL21Ds9aCKQawHsvDj+QZp/xfkRR1P1DDE+QjFrpiCBIhvwMtWYy/ElWoVsWmYZ+S\nbkqqzJ4MufI4xvcq9e0KNJyoQmxWm/Ue/szUNgSi5xAnRerADaYCUYpFavSgIbtI\nEjY6q0WVYUtuDCnQg2jslclD6GlfdeOfxKP3oxsyOQKBgQDuLxlEO3VxjvVNaPJQ\nPqxX0B5vwn3dxNpExG7csuQA9kVXGM927sO/lRckuw244Y9aEgXdhv5hJHw1tEe/\ncC07grBNA11fPQ0IbeW6kELuLttKM/+8YCNyrgXOsOq5LUMsHhKRAdvfg7MFKSh7\nXj2TiNVrmkha6AAEJxuh+9VtaQKBgQDolKj8WGorqEY6o3C/EwQLuvcEmBl+vOfW\nHSOLvP/eh8kjKimtILwQ0gmdjbKt9D3qqAI3MGQJ7aLmwhfyngc6ffYzn+78g8cY\nEL8S9XFFEJvkN/bxpl18QTbDpSwgA9408IZLPmCvLEEhHoqdJhR7wiiFTEDLsRG/\nnlOFxw4V/wKBgEUFEu5JyJOamIzQ/36vWqOrpFZAZtbPx2wr+/AqSpXYx2kgwGW3\ndLPckTNMnQJZIoA4Psjd6HLf7rplPnFEIWdgTJRUiEcj2tX5epugWDTLETKkdNPy\ni/McaIRnke0NJ6zuHfU1M7DGaibxsVBmk7Nf8HBY6eSl2/NYHdLHtiYZAoGBAKi5\n8D3hBmTVlt1DZK+5Y93+rOUwUo6XDLlQOlFNs3IEn+5a0BFBBi5NsZwTB+UaozBw\n4eqXuHtbYip19FmWOzg72Thqdj3Ke80BmRxv4tRv0CgoUYXNY1SZGtmkIfa316Qg\nOcysXAe42ybjuTt4PLPrjunk/7zFoFKa0Yzjc1yRAoGATa1i+YwPcI4x/aZQTYWa\nfjStXUPNLCFQQ3EbC0d//Kg8/SGCzSZTmsRdTXH1iaDyhO6BRjrvRQLXh0J9ckK1\nhCw6P66bK9MJYbk1mfHowDMm+CcRBB5WjOf/xxObHTe/thAbsDVqyEW3ztREQl56\nAJFw90QVMNnSLu8ZpsmU6cM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-bax2y@fly-shoes-store.iam.gserviceaccount.com",
+  "client_id": "107163043698039425088",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-bax2y%40fly-shoes-store.iam.gserviceaccount.com"
+}

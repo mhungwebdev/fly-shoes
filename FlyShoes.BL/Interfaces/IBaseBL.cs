@@ -1,14 +1,14 @@
-﻿using FlyShoes.Common.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using static Dapper.SqlMapper;
+using FlyShoes.Common.Models;
 
-namespace FlyShoes.Repository.Base
+namespace FlyShoes.Infrastructure
 {
-    public interface IBaseRepository<Entity>
+    public interface IBaseBL<Entity>
     {
         /// <summary>
         /// Thêm mới một
@@ -23,7 +23,7 @@ namespace FlyShoes.Repository.Base
         /// <param name="entity"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<Entity> Update(Entity entity, string id);
+        Task<Entity> Update(Entity entity,string id);
 
         /// <summary>
         /// Xóa bản ghi

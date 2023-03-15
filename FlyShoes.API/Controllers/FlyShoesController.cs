@@ -13,9 +13,10 @@ namespace FlyShoes.API.Controllers
         }
 
         [HttpGet]
-        public async Entity GetByID(string id)
+        public async Task<Entity> GetByID(string id)
         {
-            return new Entity();
+            dynamic obj= null;
+            return obj;
         }
     }
 }
