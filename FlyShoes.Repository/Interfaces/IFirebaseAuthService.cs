@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.DAL.Interfaces
 {
-    public interface IFirebaseService : IFirebaseAuthClient
+    public interface IFirebaseAuthService : IFirebaseAuthClient
     {
     }
 }

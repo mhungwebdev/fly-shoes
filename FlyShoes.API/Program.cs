@@ -14,7 +14,7 @@ builder.Services.AddSingleton(FirebaseApp.Create());
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions,FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme,(o) => { });
 
-builder.Services.AddScoped<IFirebaseAuthClient,FirebaseService>();
+builder.Services.AddScoped<IFirebaseAuthClient,FirebaseAuthService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

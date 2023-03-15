@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.DAL.Implements
 {
-    public class FirebaseService : IFirebaseAuthClient
+    public class FirebaseAuthService : IFirebaseAuthClient
     {
         FirebaseAuthClient _firebaseProvider;
         private readonly static string API_KEY = "AIzaSyCEtfd42e7DeEwY_TK5JNUJWjqXbymIaP0";
 
-        public FirebaseService()
+        public FirebaseAuthService()
         {
             var config = new FirebaseAuthConfig();
             config.ApiKey = API_KEY;
