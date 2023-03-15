@@ -1,5 +1,6 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Firebase.Auth.Repository;
 using FlyShoes.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,30 @@ namespace FlyShoes.DAL.Implements
 {
     public class FirebaseService : IFirebaseAuthClient
     {
-        public User User => throw new NotImplementedException();
+        FirebaseAuthClient _firebaseProvider;
+        private readonly static string API_KEY = "AIzaSyCEtfd42e7DeEwY_TK5JNUJWjqXbymIaP0";
+
+        public FirebaseService()
+        {
+            var config = new FirebaseAuthConfig();
+            config.ApiKey = API_KEY;
+            config.AuthDomain = "fly-shoes-store.firebaseapp.com";
+            config.Providers = new FirebaseAuthProvider[]
+            {
+                new GoogleProvider().AddScopes("email"),
+                new EmailProvider()
+            };
+            config.UserRepository = new FileUserRepository("LoginData");
+
+            _firebaseProvider = new FirebaseAuthClient(config);
+        }
+        public User User => _firebaseProvider.User;
 
         public event EventHandler<UserEventArgs> AuthStateChanged;
 
-        public Task<UserCredential> CreateUserWithEmailAndPasswordAsync(string email, string password, string displayName = null)
+        public async Task<UserCredential> CreateUserWithEmailAndPasswordAsync(string email, string password, string displayName = null)
         {
-            throw new NotImplementedException();
+            return await _firebaseProvider.CreateUserWithEmailAndPasswordAsync(email, password, displayName);
         }
 
         public Task<FetchUserProvidersResult> FetchSignInMethodsForEmailAsync(string email)
@@ -40,9 +58,9 @@ namespace FlyShoes.DAL.Implements
             throw new NotImplementedException();
         }
 
-        public Task<UserCredential> SignInWithEmailAndPasswordAsync(string email, string password)
+        public async Task<UserCredential> SignInWithEmailAndPasswordAsync(string email, string password)
         {
-            throw new NotImplementedException();
+            return await _firebaseProvider.SignInWithEmailAndPasswordAsync(email,password);
         }
 
         public Task<UserCredential> SignInWithRedirectAsync(FirebaseProviderType authType, SignInRedirectDelegate redirectDelegate)
@@ -52,7 +70,7 @@ namespace FlyShoes.DAL.Implements
 
         public void SignOut()
         {
-            throw new NotImplementedException();
+            _firebaseProvider.SignOut();
         }
     }
 }
