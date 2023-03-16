@@ -46,11 +46,14 @@ namespace FlyShoes.API.FirebaseHandler
 
         private List<Claim> ToClaims(IReadOnlyDictionary<string, object> claims)
         {
+            // Gọi database lấy quyền
+
             return new List<Claim>()
             {
                 new Claim("id", claims["user_id"].ToString()),
-                        new Claim("email", claims["email"].ToString())
-                    };
+                new Claim("email", claims["email"].ToString()),
+                new Claim(ClaimTypes.Role,"Admin")
+            };
 
         }
     }

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Firebase.Database;
+using Firebase.Database.Query;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class FlyShoesController<Entity> : ControllerBase
     {
@@ -12,11 +14,11 @@ namespace FlyShoes.API.Controllers
 
         }
 
-        //[HttpGet]
-        //public async Task<Entity> GetByID(string id)
-        //{
-        //    dynamic obj= null;
-        //    return obj;
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetByID(string id)
+        {
+            dynamic obj = null;
+            return Ok(null);
+        }
     }
 }

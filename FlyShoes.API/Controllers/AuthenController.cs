@@ -1,6 +1,7 @@
-﻿//using FlyShoes.DAL.Interfaces;
-using Firebase.Auth;
+﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Firebase.Database.Query;
+using Firebase.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthenController : ControllerBase
+    public class AuthenController : FlyShoesController<object>
     {
         IFirebaseAuthClient _firebaseService;
+        private FirebaseClient _firebaseClient;
 
         public AuthenController(IFirebaseAuthClient firebaseService)
         {
             _firebaseService = firebaseService;
+            _firebaseClient = new FirebaseClient("fly-shoes-store.firebaseapp.com");
         }
 
         [HttpPost]
@@ -39,6 +40,7 @@ namespace FlyShoes.API.Controllers
         }
 
         [HttpGet("/logout")]
+        [Authorize]
         public async Task Logout()
         {
             _firebaseService.SignOut();
@@ -52,6 +54,19 @@ namespace FlyShoes.API.Controllers
             var result = await _firebaseService.SignInWithEmailAndPasswordAsync(email, password);
 
             return result;
+        }
+
+        [HttpPost("/push-notify")]
+        public async Task<IActionResult> PushNotification()
+        {
+            var notify = new
+            {
+                NotificationContent = "Đây là thông báo !"
+            };
+
+            var result = await _firebaseClient.Child("Notify").PostAsync(notify);
+
+            return Ok(result);
         }
     }
 }
