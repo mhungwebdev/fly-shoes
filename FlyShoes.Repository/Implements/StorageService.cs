@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Core.Implements
 {
-    public class StorageService : IStorageService
+    public class StorageService
     {
     }
 }

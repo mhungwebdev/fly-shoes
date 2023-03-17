@@ -17,7 +17,7 @@ namespace FlyShoes.API.Controllers
         public AuthenController(IFirebaseAuthClient firebaseService)
         {
             _firebaseService = firebaseService;
-            _firebaseClient = new FirebaseClient("fly-shoes-store.firebaseapp.com");
+            _firebaseClient = new FirebaseClient("https://fly-shoes-store-default-rtdb.firebaseio.com");
         }
 
         [HttpPost]
@@ -52,6 +52,10 @@ namespace FlyShoes.API.Controllers
             var email = useLogin.GetValueOrDefault("Email").ToString();
             var password = useLogin.GetValueOrDefault("Password").ToString();
             var result = await _firebaseService.SignInWithEmailAndPasswordAsync(email, password);
+
+            var res = result?.AuthCredential?.ProviderType == FirebaseProviderType.EmailAndPassword;
+
+            
 
             return result;
         }
