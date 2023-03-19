@@ -8,5 +8,6 @@ namespace FlyShoes.DAL.Interfaces
 {
     public interface IFirestoreService
     {
+        void PushNotification(int userID,string notificationContent,string reference);
     }
 }

@@ -2,7 +2,10 @@ using Firebase.Auth;
 using FirebaseAdmin;
 using FlyShoes.API.FirebaseHandler;
 using FlyShoes.API.MiddleWareHandler;
+using FlyShoes.Core.Implements;
+using FlyShoes.Core.Interfaces;
 using FlyShoes.DAL.Implements;
+using FlyShoes.DAL.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -19,6 +22,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions,FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme,(o) => { });
 
 builder.Services.AddScoped<IFirebaseAuthClient,FirebaseAuthService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IFirestoreService, FirestoreService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,5 +1,6 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
+using FlyShoes.DAL.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +10,19 @@ namespace FlyShoes.API.Controllers
     [ApiController]
     public class FlyShoesController<Entity> : ControllerBase
     {
-        public FlyShoesController()
-        {
+        IFirestoreService _fireStoreService;
 
+        public FlyShoesController(IFirestoreService firestoreService)
+        {
+            _fireStoreService = firestoreService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByID(string id)
+        [HttpPost("/push-notification")]
+        public async Task<IActionResult> PushNotification([FromBody]string message)
         {
-            dynamic obj = null;
-            return Ok(null);
+            _fireStoreService.PushNotification(1, message, "");
+
+            return Ok();
         }
     }
 }
