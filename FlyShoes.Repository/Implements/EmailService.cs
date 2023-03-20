@@ -24,8 +24,8 @@ namespace FlyShoes.DAL.Implements
         void OpenConnect()
         {
             _smtpClient = new SmtpClient();
-            _smtpClient.Connect("smtp-relay.sendinblue.com", 587, SecureSocketOptions.SslOnConnect);
-            _smtpClient.Authenticate("fly-shoes", "xsmtpsib-5bec5504846f7fd1f1c6f83c7f575835281737dfa9c41372c3d435a7fb20b2b9-t8Pm1FV3NH7WhQ5d");
+            _smtpClient.Connect("smtp-relay.sendinblue.com", 587, SecureSocketOptions.Auto);
+            _smtpClient.Authenticate("mhung.haui.webdev@gmail.com", "B2yJCK08gMYIjdUt");
         }
 
         void Disconnect()
@@ -35,14 +35,17 @@ namespace FlyShoes.DAL.Implements
 
         public async Task<bool> SendMail(string content)
         {
+            OpenConnect();
             var emailMessage = new MimeMessage();
 
             emailMessage.From.Add(MailboxAddress.Parse("mhung.haui.webdev@gmail.com"));
-            emailMessage.To.Add (MailboxAddress.Parse("mahhugcoder@gmail.com"));
+            emailMessage.To.Add (MailboxAddress.Parse("vut5441@gmail.com"));
+            emailMessage.Cc.Add (MailboxAddress.Parse("mahhugcoder@gmail.com"));
             emailMessage.Subject = "Test mail";
-            emailMessage.Body = new TextPart("html") { Text = content };
+            emailMessage.Body = new TextPart("html") { Text = "<strong style='color:red'>Test email</strong>" };
 
-            await _smtpClient.SendAsync(emailMessage);
+            var res = await _smtpClient.SendAsync(emailMessage);
+            Disconnect();
 
             return true;
         }
