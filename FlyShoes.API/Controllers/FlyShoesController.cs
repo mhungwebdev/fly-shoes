@@ -11,10 +11,12 @@ namespace FlyShoes.API.Controllers
     public class FlyShoesController<Entity> : ControllerBase
     {
         IFirestoreService _fireStoreService;
+        IEmailService _emailService;
 
-        public FlyShoesController(IFirestoreService firestoreService)
+        public FlyShoesController(IFirestoreService firestoreService,IEmailService emailService)
         {
             _fireStoreService = firestoreService;
+            _emailService = emailService;
         }
 
         [HttpPost("/push-notification")]
@@ -24,5 +26,14 @@ namespace FlyShoes.API.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SendEmail()
+        {
+            var res = await _emailService.SendMail("Test mail");
+
+            return Ok(res);
+        }
     }
+
 }

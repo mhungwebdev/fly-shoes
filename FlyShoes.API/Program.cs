@@ -24,6 +24,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IFirebaseAuthClient,FirebaseAuthService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IFirestoreService, FirestoreService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -8,7 +8,7 @@ namespace FlyShoes.API.Controllers
 {
     public class UserController : FlyShoesController<User>
     {
-        public UserController(IFirestoreService firestoreService):base(firestoreService)
+        public UserController(IFirestoreService firestoreService,IEmailService emailService):base(firestoreService,emailService)
         {
 
         }
