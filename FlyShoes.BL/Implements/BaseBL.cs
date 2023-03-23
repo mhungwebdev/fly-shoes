@@ -1,5 +1,5 @@
 ﻿using FlyShoes.Common.Models;
-using FlyShoes.Infrastructure;
+using FlyShoes.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

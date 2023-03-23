@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class StorageController : ControllerBase
     {
         IStorageService _storageService;

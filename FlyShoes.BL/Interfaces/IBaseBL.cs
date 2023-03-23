@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlyShoes.Common.Models;
 
-namespace FlyShoes.Infrastructure
+namespace FlyShoes.Interfaces
 {
     public interface IBaseBL<Entity>
     {

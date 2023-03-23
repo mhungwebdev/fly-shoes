@@ -1,15 +1,13 @@
 ﻿using FlyShoes.BL.Interfaces;
 using FlyShoes.Common.Models;
-using FlyShoes.DAL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
-    public class UserController : FlyShoesController<User>
+    public class CategoryController : FlyShoesController<Category>
     {
-        public UserController(IUserBL userBL):base(userBL)
+        public CategoryController(ICategoryBL categoryBL):base(categoryBL)
         {
 
         }

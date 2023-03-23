@@ -2,14 +2,38 @@ using Firebase.Auth;
 using FirebaseAdmin;
 using FlyShoes.API.FirebaseHandler;
 using FlyShoes.API.MiddleWareHandler;
+using FlyShoes.BL;
+using FlyShoes.BL.Base;
+using FlyShoes.BL.Implements;
+using FlyShoes.BL.Interfaces;
 using FlyShoes.Core.Implements;
 using FlyShoes.Core.Interfaces;
 using FlyShoes.DAL.Implements;
 using FlyShoes.DAL.Interfaces;
+using FlyShoes.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IFirebaseAuthClient, FirebaseAuthService>();
+builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IFirestoreService, FirestoreService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IBrandBL, BrandBL>();
+builder.Services.AddScoped<ICartDetailBL, CartDetailBL>();
+builder.Services.AddScoped<ICategoryBL, CategoryBL>();
+builder.Services.AddScoped<IColorBL, ColorBL>();
+builder.Services.AddScoped<IEmailTemplateBL, EmailTemplateBL>();
+builder.Services.AddScoped<IOrderBL, OrderBL>();
+builder.Services.AddScoped<IOrderDetailBL, OrderDetailBL>();
+builder.Services.AddScoped<IRankCustomerBL, RankCustomerBL>();
+builder.Services.AddScoped<IShoesBL, ShoesBL>();
+builder.Services.AddScoped<IShoesDetailBL, ShoesDetailBL>();
+builder.Services.AddScoped<ISizeBL, SizeBL>();
+builder.Services.AddScoped<IUserBL, UserBL>();
+builder.Services.AddScoped<IVoucherBL, VoucherBL>();
+builder.Services.AddScoped(typeof(IBaseBL<>), typeof(BaseBL<>));
+
 
 // Add services to the container.
 
@@ -20,11 +44,6 @@ builder.Services.AddControllers((o) =>
 builder.Services.AddSingleton(FirebaseApp.Create());
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions,FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme,(o) => { });
-
-builder.Services.AddScoped<IFirebaseAuthClient,FirebaseAuthService>();
-builder.Services.AddScoped<IStorageService, StorageService>();
-builder.Services.AddScoped<IFirestoreService, FirestoreService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

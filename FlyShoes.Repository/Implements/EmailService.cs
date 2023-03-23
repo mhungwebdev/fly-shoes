@@ -9,6 +9,7 @@ using MailKit.Security;
 using MimeKit;
 using FirebaseAdmin.Messaging;
 using System.Reactive.Subjects;
+using FlyShoes.Common.Models;
 
 namespace FlyShoes.DAL.Implements
 {
@@ -33,16 +34,19 @@ namespace FlyShoes.DAL.Implements
             _smtpClient.Disconnect(true);
         }
 
-        public async Task<bool> SendMail(string content)
+        public async Task<bool> SendMail(FlyEmail fsEmail)
         {
             OpenConnect();
             var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(MailboxAddress.Parse("mhung.haui.webdev@gmail.com"));
-            emailMessage.To.Add (MailboxAddress.Parse("vut5441@gmail.com"));
-            emailMessage.Cc.Add (MailboxAddress.Parse("mahhugcoder@gmail.com"));
-            emailMessage.Subject = "Test mail";
-            emailMessage.Body = new TextPart("html") { Text = "<strong style='color:red'>Test email</strong>" };
+            emailMessage.From.Add(MailboxAddress.Parse(fsEmail.From));
+            emailMessage.To.Add (MailboxAddress.Parse(fsEmail.To));
+            foreach(var cc in fsEmail.Cc)
+            {
+                emailMessage.Cc.Add (MailboxAddress.Parse(cc));
+            }
+            emailMessage.Subject = fsEmail.Subject;
+            emailMessage.Body = new TextPart("html") { Text = fsEmail.EmailContent };
 
             var res = await _smtpClient.SendAsync(emailMessage);
             Disconnect();

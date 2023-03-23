@@ -1,14 +1,14 @@
 ﻿using FlyShoes.Common.Models;
+using FlyShoes.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlyShoes.DAL.Interfaces
+namespace FlyShoes.BL.Interfaces
 {
-    public interface IEmailService
+    public interface ICategoryBL : IBaseBL<Category>
     {
-        Task<bool> SendMail(FlyEmail fsEmail);
     }
 }

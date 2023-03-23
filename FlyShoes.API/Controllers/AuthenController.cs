@@ -9,8 +9,6 @@ using FlyShoes.Common.Constants;
 
 namespace FlyShoes.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class AuthenController : ControllerBase
     {
         IFirebaseAuthClient _firebaseService;
@@ -30,32 +28,11 @@ namespace FlyShoes.API.Controllers
             return result;
         }
 
-        [HttpGet("/getUser")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<User> GetCurrentUser()
-        {
-            var result = _firebaseService.User;
-
-            return result;
-        }
-
         [HttpGet("/logout")]
         [Authorize]
         public async Task Logout()
         {
             _firebaseService.SignOut();
-        }
-
-        [HttpPost("/login")]
-        public async Task<UserCredential> Login([FromBody] Dictionary<string,object> useLogin)
-        {
-            var email = useLogin.GetValueOrDefault("Email").ToString();
-            var password = useLogin.GetValueOrDefault("Password").ToString();
-            var result = await _firebaseService.SignInWithEmailAndPasswordAsync(email, password);
-
-            var res = result?.AuthCredential?.ProviderType == FirebaseProviderType.EmailAndPassword;
-
-            return result;
         }
     }
 }
