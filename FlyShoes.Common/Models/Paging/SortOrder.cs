@@ -20,7 +20,7 @@ namespace FlyShoes.Common.Models
         public SortType SortType { get; set; }
 
         public SortOrder() { 
-            this.FieldSort = string.Empty;
+            this.FieldSort = "Modified";
             this.SortType = SortType.DESC;
         }
     }

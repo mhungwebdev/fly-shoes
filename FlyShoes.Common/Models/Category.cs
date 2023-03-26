@@ -17,7 +17,7 @@ namespace FlyShoes.Common.Models
         public int? CategoryName { get; set; }
 
         [Required]
-        public int? CategoryDescription { get; set; }
+        public string? CategoryDescription { get; set; }
         public int? VoucherID { get; set; }
     }
 }

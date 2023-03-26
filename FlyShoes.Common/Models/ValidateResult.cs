@@ -12,5 +12,7 @@ namespace FlyShoes.Common.Models
         public ErrorCodeEnum ErrorCode { get; set; }
 
         public string FieldError { get; set; }
+
+        public object FieldValue { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace FlyShoes.Common.Models
         public string BrandName { get; set; }
 
         [Required]
-        public string BrandSologan { get; set; }
+        public string BrandSlogan { get; set; }
         public string DescriptionShot { get; set; }
 
         [Required]
