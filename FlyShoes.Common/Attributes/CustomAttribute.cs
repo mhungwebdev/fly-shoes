@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FlyShoes.Common
+{
+    [AttributeUsage(AttributeTargets.Property)]
+    public class NotMap : Attribute{}
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class PrimaryKey : Attribute{}
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Email : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Phone : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Length : Attribute { 
+        public int MaxLength { get; set; }
+        public int MinLength { get; set; }
+
+        public Length(int maxLength = 255,int minLength = 0) { 
+            MaxLength = maxLength;
+            MinLength = minLength;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Unique : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Required : Attribute { }
+}

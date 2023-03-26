@@ -1,11 +1,16 @@
 ﻿using FlyShoes.Common.Constants;
 using FlyShoes.Common.Models;
 using FlyShoes.Core.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
+    [Route("api/v1/[controller]")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = RoleTypeConstant.ADMIN)]
     public class StorageController : ControllerBase
     {
         IStorageService _storageService;
@@ -15,7 +20,7 @@ namespace FlyShoes.API.Controllers
             _storageService = storageService;
         }
 
-        [HttpPost("/upload")]
+        [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(List<IFormFile> files)
         {
             var fileUploads = files.Select(file => new FSFile(file)).ToList();
@@ -26,7 +31,7 @@ namespace FlyShoes.API.Controllers
             return Ok(res);
         }
 
-        [HttpPut("/tem-to-main")]
+        [HttpPut("tem-to-main")]
         public async Task<IActionResult> MoveFileTemToMain(Guid fileID)
         {
             var res = await _storageService.MoveFileFromTemToMain(fileID);
@@ -34,7 +39,7 @@ namespace FlyShoes.API.Controllers
             return Ok(res);
         }
 
-        [HttpDelete("/delete")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteFile(List<Guid> fileIDs)
         {
             await _storageService.DeleteFileMulti(fileIDs); 

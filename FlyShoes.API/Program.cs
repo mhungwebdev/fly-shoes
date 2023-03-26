@@ -13,9 +13,12 @@ using FlyShoes.DAL.Interfaces;
 using FlyShoes.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IFirebaseAuthClient, FirebaseAuthService>();
+builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IFirestoreService, FirestoreService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -41,6 +44,12 @@ builder.Services.AddControllers((o) =>
 {
     o.Filters.Add<HttpResponseFilter>();
 });
+
+builder.Services.AddControllers().AddNewtonsoftJson(o =>
+{
+    o.UseMemberCasing();
+});
+
 builder.Services.AddSingleton(FirebaseApp.Create());
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions,FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme,(o) => { });
@@ -50,6 +59,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

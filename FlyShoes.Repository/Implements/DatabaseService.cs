@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FlyShoes.Common;
 using FlyShoes.Common.Models;
 using FlyShoes.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -10,11 +11,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FlyShoes.Repository.Base
+namespace FlyShoes.DAL.Implements
 {
-    public class DatabaseService<Entity> : IDatabaseService<Entity>
+    public class DatabaseService : IDatabaseService
     {
         protected string? connectString;
+
+        public User CurrentUser { get; set; }
+
         public DatabaseService(IConfiguration configuration)
         {
             connectString = configuration.GetConnectionString("DefaultConnection");
@@ -25,41 +29,427 @@ namespace FlyShoes.Repository.Base
             return new MySqlConnection(connectString);
         }
 
-        public Task<bool> Delete(string id)
+        #region Execute
+        public int ExecuteUsingCommandText(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<Entity>> GetAll()
-        {
-            var connection = GetDbConnection();
-            connection.Open();
-            var param = new Dictionary<string, object>()
+            if (connection == null && transaction == null)
             {
-                {"UserID",2 }
-            };
-            var result = await connection.QueryAsync<List<Entity>>("Proc_user_GetAll",param:param, commandType:CommandType.StoredProcedure);
-            return (List<Entity>)result;
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = connection.Execute(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = connection.Execute(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
         }
 
-        public Task<Entity> GetByID(string id)
+        public async Task<int> ExecuteUsingCommandTextAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
         {
-            throw new NotImplementedException();
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = await connection.ExecuteAsync(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = await connection.ExecuteAsync(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
         }
 
-        public Task<Entity> Insert(Entity entity)
+        public int ExecuteUsingStoredProcedure(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
         {
-            throw new NotImplementedException();
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = connection.Execute(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = connection.Execute(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
         }
 
-        public Task<List<Entity>> Paging(PagingPayload pagingPayLoad)
+        public async Task<int> ExecuteUsingStoredProcedureAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
         {
-            throw new NotImplementedException();
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = await connection.ExecuteAsync(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = await connection.ExecuteAsync(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+        #endregion
+
+        #region Query
+        public List<Entity> QueryUsingCommanText<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = connection.Query<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = connection.Query<Entity>(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
         }
 
-        public Task<Entity> Update(Entity entity, string id)
+        public async Task<List<Entity>> QueryUsingCommanTextAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
         {
-            throw new NotImplementedException();
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = await connection.QueryAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = await connection.QueryAsync<Entity>(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
         }
+
+        public List<Entity> QueryUsingStoredProcedure<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = connection.Query<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = connection.Query<Entity>(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<List<Entity>> QueryUsingStoredProcedureAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = await connection.QueryAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }else if(connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = await connection.QueryAsync<Entity>(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+        #endregion
+
+        #region Query single
+        public Entity QuerySingleUsingCommanText<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = connection.QueryFirstOrDefault<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = connection.QueryFirstOrDefault<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<Entity> QuerySingleUsingCommanTextAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = await connection.QueryFirstOrDefaultAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = await connection.QueryFirstOrDefaultAsync<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public Entity QuerySingleUsingStoredProcedure<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = connection.QueryFirstOrDefault<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = connection.QueryFirstOrDefault<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<Entity> QuerySingleUsingStoredProcedureAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = await connection.QueryFirstOrDefaultAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = await connection.QueryFirstOrDefaultAsync<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+        #endregion
+
+        #region Execute scalar
+        public Entity ExecuteScalarUsingCommandText<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = connection.ExecuteScalar<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text,transaction: transaction);
+
+                var result = connection.ExecuteScalar<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<Entity> ExecuteScalarUsingCommandTextAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = await connection.ExecuteScalarAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = await connection.ExecuteScalarAsync<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public Entity ExecuteScalarUsingStoreProcedure<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = connection.ExecuteScalar<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = connection.ExecuteScalar<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<Entity> ExecuteScalarUsingStoreProcedureAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = await connection.ExecuteScalarAsync<Entity>(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result;
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = await connection.ExecuteScalarAsync<Entity>(command);
+
+                return result;
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+        #endregion
     }
 }

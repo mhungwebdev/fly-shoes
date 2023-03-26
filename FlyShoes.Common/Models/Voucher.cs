@@ -8,8 +8,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace FlyShoes.Common.Models
 {
+    [ConfigTable(tableName:"Voucher")]
     public class Voucher : BaseModel
     {
+        [PrimaryKey]
         public int? VoucherID { get; set; }
         public string VoucherTitle { get; set; }
         public VoucherTypeEnum VoucherType { get; set; }

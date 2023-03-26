@@ -19,6 +19,8 @@ namespace FlyShoes.Common.Models
         /// </summary>
         public FilterOperator FilterOperator { get; set; }
 
+        public object Value { get; set; }
+
         public FilterColumn() { 
             this.FieldName = string.Empty;
             this.FilterOperator = FilterOperator.NotEqual;

@@ -21,6 +21,7 @@ namespace FlyShoes.Common.Models
 
         public SortOrder() { 
             this.FieldSort = string.Empty;
+            this.SortType = SortType.DESC;
         }
     }
 }

@@ -9,6 +9,8 @@ using FlyShoes.Common.Constants;
 
 namespace FlyShoes.API.Controllers
 {
+    [Route("api/v1/[controller]")]
+    [ApiController]
     public class AuthenController : ControllerBase
     {
         IFirebaseAuthClient _firebaseService;
@@ -18,17 +20,17 @@ namespace FlyShoes.API.Controllers
             _firebaseService = firebaseService;
         }
 
-        [HttpPost]
-        public async Task<UserCredential> RegisterAccount()
+        [HttpPost("login")]
+        public async Task<IActionResult> RegisterAccount(Dictionary<string,object> user)
         {
-            var email = "mhung.haui.webdev@gmail.com";
-            var password = "123456";
-            var result = await _firebaseService.CreateUserWithEmailAndPasswordAsync(email, password);
+            var email = user.GetValue("Email").ToString();
+            var password = user.GetValue("Password").ToString();
+            var result = await _firebaseService.SignInWithEmailAndPasswordAsync(email, password);
 
-            return result;
+            return Ok(result);
         }
 
-        [HttpGet("/logout")]
+        [HttpGet("logout")]
         [Authorize]
         public async Task Logout()
         {

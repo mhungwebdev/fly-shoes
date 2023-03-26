@@ -2,10 +2,14 @@
 using Firebase.Database.Query;
 using FlyShoes.Interfaces;
 using FlyShoes.DAL.Interfaces;
-using FlyShoes.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using FlyShoes.Common.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using FlyShoes.Common.Enums;
+using FlyShoes.Common.Constants;
 
 namespace FlyShoes.API.Controllers
 {
@@ -14,90 +18,104 @@ namespace FlyShoes.API.Controllers
     public class FlyShoesController<Entity> : ControllerBase
     {
         IBaseBL<Entity> _baseBL;
+        
         public FlyShoesController(IBaseBL<Entity> baseBL)
         {
             _baseBL= baseBL;
         }
 
-        #region Get
-        /// <summary>
-        /// Lấy tất cả bản ghi
-        /// Author : mhungwebdev (28/8/2022)
-        /// </summary>
-        /// <returns>Tất cả bản ghi</returns>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<ServiceResponse> Get()
         {
-            var res = _baseBL.GetAll();
+            var result = new ServiceResponse();
+            result.Data = await _baseBL.GetAll();
 
-            return Ok(res);
+            return result;
         }
-        #endregion
 
-        #region Get by id
-        /// <summary>
-        /// Lấy theo id
-        /// Author : mhungwebdev (29/8/2022)
-        /// </summary>
-        /// <param name="id">id của bản ghi</param>
-        /// <returns>Bản ghi có id tương ứng</returns>
+        [HttpGet("get-by-field")]
+        public async Task<ServiceResponse> GetByField(string fieldName,string fieldValue)
+        {
+            var result = new ServiceResponse();
+            result.Data = await _baseBL.GetByField(fieldName,fieldValue);
+
+            return result;
+        }
+
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
-            var res = _baseBL.GetByID(id.ToString());
+            var result = new ServiceResponse();
+            result.Data = await _baseBL.GetByID(id.ToString());
 
-            return Ok(res);
+            return result;
         }
-        #endregion
 
-        #region Delete
-        /// <summary>
-        /// Xóa theo id
-        /// Author : mhungwebdev (29/8/2022)
-        /// </summary>
-        /// <param name="id">id bản ghi muốn xóa</param>
-        /// <returns>1 nếu thành công</returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var res = _baseBL.Delete(id.ToString());
+            if (!_baseBL.ValidateRole(Common.ActionEnum.Delete)) return StatusCode(403);
+
+            var res = await _baseBL.Delete(id.ToString());
 
             return Ok(res);
         }
-        #endregion
 
-        #region Insert
-        /// <summary>
-        /// Thêm mới 1 bản ghi
-        /// Author : mhungwebdev (29/8/2022)
-        /// </summary>
-        /// <param name="entity">bản ghi mới</param>
-        /// <returns>1 nếu thành công</returns>
-        [HttpPost]
-        public IActionResult Insert(Entity entity)
+        [HttpPost("paging")]
+        public async Task<ServiceResponse> Paging(PagingPayload pagingPayload)
         {
-            var res = _baseBL.Insert(entity);
+            var result = new ServiceResponse();
 
-            return StatusCode(201, res);
+            result.Data = await _baseBL.Paging(pagingPayload);
+
+            return result;
         }
-        #endregion
 
-        #region Update
-        /// <summary>
-        /// Sửa bản ghi
-        /// Author : mhungwebdev (29/8/2022)
-        /// </summary>
-        /// <param name="entity">bản ghi cập nhật</param>
-        /// <param name="id">id bản ghi cập nhật</param>
-        /// <returns>1 nếu update thành công</returns>
-        [HttpPut("{id}")]
-        public virtual IActionResult Update(Entity entity, int id)
+        [HttpPost("save")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Save(Entity entity)
         {
-            var res = _baseBL.Update(entity, id.ToString());
+            var state = entity.GetValue<ModelStateEnum>("State");
+            switch (state)
+            {
+                case ModelStateEnum.None:
+                    break;
+                case ModelStateEnum.Insert:
+                    if (!_baseBL.ValidateRole(Common.ActionEnum.Insert)) return StatusCode(403);
+                    break;
+                case ModelStateEnum.Update:
+                    if (!_baseBL.ValidateRole(Common.ActionEnum.Update)) return StatusCode(403);
+                    break;
+                case ModelStateEnum.Delete:
+                    break;
+                case ModelStateEnum.Duplicate:
+                    break;
+            }
 
-            return StatusCode(200, res);
+            var result = await _baseBL.Save(entity);
+
+            return Ok(result);
         }
-        #endregion
+
+        [HttpDelete("delete-multi")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DeleteMulti([FromBody]List<int> ids)
+        {
+            if (!_baseBL.ValidateRole(Common.ActionEnum.DeleteMulti)) return StatusCode(403);
+
+            var res = await _baseBL.DeleteMulti(ids);
+
+            return Ok(res);
+        }
+
+        [HttpPost("save-list")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = RoleTypeConstant.ADMIN)]
+        public async Task<ServiceResponse> Save(List<Entity> entities)
+        {
+            var result = await _baseBL.SaveList(entities);
+
+            return result;
+        }
     }
-
 }

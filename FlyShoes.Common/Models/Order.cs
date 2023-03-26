@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
+    [ConfigTable(tableName:"Order")]
     public class Order : BaseModel
     {
+        [PrimaryKey]
         public int? OrderID { get; set; }
+        [Required]
         public int? UserID { get; set; }
         public int? VoucherID { get; set; }
+        [Required]
         public int? Status { get; set; }
+        [Required,Length(maxLength:100)]
         public string ReceiverName { get; set; }
+        [Required,Phone]
         public string ReceiverPhone { get; set; }
+        [Required]
         public string ReceiverAddress { get; set; }
     }
 }

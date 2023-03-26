@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Enums
 {
-    public enum ModelStateEnum
+    public enum RuleDeleteEnum
     {
-        None = 0,
-        Insert = 1,
-        Update = 2,
-        Delete = 3,
-        Duplicate = 4
+        Restrict = 1,
+        Cascase = 2
     }
 }

@@ -13,6 +13,8 @@ namespace FlyShoes.Common.Models
         public DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedDate { get; set; }
+
+        [NotMap]
         public ModelStateEnum State { get; set; }
     }
 }
