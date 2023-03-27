@@ -23,6 +23,10 @@ namespace FlyShoes.Core.Interfaces
         public List<Entity> QueryUsingStoredProcedure<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null);
 
         public Task<List<Entity>> QueryUsingStoredProcedureAsync<Entity>(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null,IDbConnection connection = null);
+
+        public Task<List<object>> QueryUsingCommanTextAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null);
+
+        public Task<List<object>> QueryUsingStoredProcedureAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null);
         #endregion
 
         #region Execute

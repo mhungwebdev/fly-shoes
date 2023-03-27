@@ -34,4 +34,19 @@ namespace FlyShoes.Common
 
     [AttributeUsage(AttributeTargets.Property)]
     public class Required : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class Detail : Attribute {
+        public string CommandGetDetail { get; set; }
+        public string PropertyInMaster { get; set; }
+
+        public Type Type { get; set; }
+
+        public Detail(string commandGetDetail, string propertyInMaster,Type type)
+        {
+            CommandGetDetail = commandGetDetail;
+            PropertyInMaster = propertyInMaster;
+            Type = type;
+        }
+    }
 }

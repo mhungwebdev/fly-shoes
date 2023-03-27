@@ -6,12 +6,14 @@ using FlyShoes.Common.Models;
 using FlyShoes.Core.Interfaces;
 using FlyShoes.Interfaces;
 using MimeKit;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -27,10 +29,26 @@ namespace FlyShoes.BL
         private static string _fieldPrimaryKey;
         private static List<string> _tableRelateds;
 
+        public static readonly DateFormatHandling JSONDateFormatHandling = DateFormatHandling.IsoDateFormat;
+        public static readonly DateTimeZoneHandling JSONTimeZoneHandling = DateTimeZoneHandling.Local;
+        public static readonly string JSONDateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffk";
+        public static readonly NullValueHandling JSONNullValueHandling = NullValueHandling.Include;
+        public static readonly ReferenceLoopHandling JSONReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+        public static JsonSerializerSettings _jsonSerializerSettings;
+
         public BaseBL(IDatabaseService databaseService)
         {
             _dataBaseService = databaseService;
-            
+            _jsonSerializerSettings = new JsonSerializerSettings() { 
+                DateFormatHandling = JSONDateFormatHandling,
+                DateTimeZoneHandling = JSONTimeZoneHandling,
+                DateFormatString = JSONDateFormatString,
+                NullValueHandling = JSONNullValueHandling,
+                ReferenceLoopHandling = JSONReferenceLoopHandling,
+                //ContractResolver = new ContractRe
+            };
+           
             SetupBL();
         }
 
@@ -113,6 +131,22 @@ namespace FlyShoes.BL
                 {"v_ID", id}
             };
             var result = await _dataBaseService.QuerySingleUsingStoredProcedureAsync<Entity>(command, param);
+
+            var detailAttributes = typeof(Entity).GetCustomAttributes(typeof(Detail));
+            foreach(var detailAttribute in detailAttributes)
+            {
+                var commandGetDetail = (detailAttribute as Detail).CommandGetDetail;
+                var property = (detailAttribute as Detail).PropertyInMaster;
+                var typeDetail = (detailAttribute as Detail).Type;
+
+                var paramGetDetail = new Dictionary<string, object>()
+                {
+                    {"@MasterID",id }
+                };
+
+                var detail = await _dataBaseService.QueryUsingCommanTextAsync(commandGetDetail, paramGetDetail);
+                result.SetValue(property, JsonConvert.DeserializeObject(JsonConvert.SerializeObject(detail,_jsonSerializerSettings), typeDetail, _jsonSerializerSettings));
+            }
 
             return result;
         }
@@ -620,7 +654,7 @@ namespace FlyShoes.BL
         public virtual List<ValidateResult> ValidateRequired(Entity entity)
         {
             var result = new List<ValidateResult>();
-            var requriedProps = typeof(Entity).GetProperties(typeof(Required));
+            var requriedProps = typeof(Entity).GetProperties(typeof(Common.Required));
 
             if (requriedProps != null && requriedProps.Count > 0)
             {
@@ -655,12 +689,12 @@ namespace FlyShoes.BL
 
 
         #region Do Insert
-        public virtual void DoInsert(Entity entity, IDbConnection connection, IDbTransaction transaction)
+        public virtual int DoInsert(Entity entity, IDbConnection connection, IDbTransaction transaction)
         {
             var procInsert = GetProcInsert();
             var param = BuildParamFromEntity(entity);
 
-            _dataBaseService.ExecuteUsingStoredProcedure(procInsert, param, transaction,connection);
+            return _dataBaseService.ExecuteScalarUsingStoreProcedure<int>(procInsert, param, transaction,connection);
         }
         #endregion
 
@@ -752,7 +786,8 @@ namespace FlyShoes.BL
                 case ModelStateEnum.None:
                     break;
                 case ModelStateEnum.Insert:
-                    DoInsert(entity,connection,transaction);
+                    var id = DoInsert(entity,connection,transaction);
+                    entity.SetPrimaryKey<Entity>(id);
                     break;
                 case ModelStateEnum.Update:
                     DoUpdate(entity, connection, transaction);

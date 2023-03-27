@@ -32,5 +32,8 @@ namespace FlyShoes.Common.Models
 
         [Required]
         public string BrandName { get; set;}
+
+        [NotMap,Detail("SELECT * FROM ShoesDetail WHERE ShoesID = @MasterID","ShoesDetails",typeof(List<ShoesDetail>))]
+        public List<ShoesDetail> ShoesDetails { get; set; }
     }
 }

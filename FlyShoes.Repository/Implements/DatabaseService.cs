@@ -227,11 +227,64 @@ namespace FlyShoes.DAL.Implements
                 connection.Dispose();
                 connection.Close();
                 return result.ToList();
-            }else if(connection != null && transaction != null)
+            }
+            else if (connection != null && transaction != null)
             {
                 var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
 
                 var result = await connection.QueryAsync<Entity>(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<List<object>> QueryUsingCommanTextAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text);
+
+                var result = await connection.QueryAsync(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
+
+                var result = await connection.QueryAsync(command);
+
+                return result.ToList();
+            }
+
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database !");
+        }
+
+        public async Task<List<object>> QueryUsingStoredProcedureAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
+        {
+            if (connection == null && transaction == null)
+            {
+                connection = GetDbConnection();
+                connection.Open();
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure);
+
+                var result = await connection.QueryAsync(command);
+
+                connection.Dispose();
+                connection.Close();
+                return result.ToList();
+            }
+            else if (connection != null && transaction != null)
+            {
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                var result = await connection.QueryAsync(command);
 
                 return result.ToList();
             }
@@ -363,7 +416,7 @@ namespace FlyShoes.DAL.Implements
             }
             else if (connection != null && transaction != null)
             {
-                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text,transaction: transaction);
+                var command = new CommandDefinition(commandText, param, commandType: CommandType.Text, transaction: transaction);
 
                 var result = connection.ExecuteScalar<Entity>(command);
 

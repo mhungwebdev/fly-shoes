@@ -198,5 +198,11 @@ namespace FlyShoes
 
             return primaryKeyProp.GetValue<int>(primaryKeyField);
         }
+
+        public static void SetPrimaryKey<Entity>(this Entity entity,int id)
+        {
+            var primaryKeyProp = typeof(Entity).GetProperty(typeof(PrimaryKey));
+            primaryKeyProp.SetValue(entity, id);
+        }
     }
 }
