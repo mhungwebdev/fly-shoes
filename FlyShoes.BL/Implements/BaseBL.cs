@@ -587,7 +587,7 @@ namespace FlyShoes.BL
             {
                 foreach (var phoneProp in phoneProps)
                 {
-                    var phone = phoneProp.GetValue(entity).ToString();
+                    var phone = phoneProp.GetValue(entity)?.ToString();
                     if (!string.IsNullOrWhiteSpace(phone) && !phone.ValidatePhone())
                     {
                         result.Add(new ValidateResult()
@@ -629,13 +629,13 @@ namespace FlyShoes.BL
         public virtual List<ValidateResult> ValidateLength(Entity entity)
         {
             var result = new List<ValidateResult>();
-            var uniqueProps = typeof(Entity).GetProperties(typeof(Unique));
+            var lengthProps = typeof(Entity).GetProperties(typeof(Length));
 
-            if (uniqueProps != null && uniqueProps.Count > 0)
+            if (lengthProps != null && lengthProps.Count > 0)
             {
-                foreach (var uniqueProp in uniqueProps)
+                foreach (var uniqueProp in lengthProps)
                 {
-                    var value = uniqueProp.GetValue(entity).ToString();
+                    var value = uniqueProp.GetValue(entity)?.ToString();
                     var maxLength = (uniqueProp.GetCustomAttribute(typeof(Length)) as Length).MaxLength;
                     if (!string.IsNullOrWhiteSpace(value) && value.Length > maxLength)
                     {
@@ -660,7 +660,7 @@ namespace FlyShoes.BL
             {
                 foreach (var requriedProp in requriedProps)
                 {
-                    var value = requriedProp.GetValue(entity).ToString();
+                    var value = requriedProp.GetValue(entity)?.ToString();
                     if (!string.IsNullOrWhiteSpace(value))
                     {
                         result.Add(new ValidateResult()
@@ -764,13 +764,13 @@ namespace FlyShoes.BL
                     break;
                 case ModelStateEnum.Insert:
                     entity.SetValue("CreatedDate", DateTime.Now);
-                    entity.SetValue("CreatedBy",_dataBaseService.CurrentUser.FullName);
+                    entity.SetValue("CreatedBy",_dataBaseService?.CurrentUser?.FullName);
                     entity.SetValue("ModifiedDate", DateTime.Now);
-                    entity.SetValue("ModifiedBy", _dataBaseService.CurrentUser.FullName);
+                    entity.SetValue("ModifiedBy", _dataBaseService?.CurrentUser?.FullName);
                     break;
                 case ModelStateEnum.Update:
                     entity.SetValue("ModifiedDate", DateTime.Now);
-                    entity.SetValue("ModifiedBy", _dataBaseService.CurrentUser.FullName);
+                    entity.SetValue("ModifiedBy", _dataBaseService?.CurrentUser?.FullName);
                     break;
                 case ModelStateEnum.Delete:
                     break;

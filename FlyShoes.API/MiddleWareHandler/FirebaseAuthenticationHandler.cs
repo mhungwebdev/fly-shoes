@@ -1,5 +1,6 @@
 ﻿using FirebaseAdmin;
 using FirebaseAdmin.Auth;
+using FlyShoes.BL.Interfaces;
 using FlyShoes.Common.Constants;
 using FlyShoes.Common.Models;
 using FlyShoes.Core.Interfaces;
@@ -16,10 +17,12 @@ namespace FlyShoes.API.FirebaseHandler
     {
         private FirebaseApp _firebaseApp;
         private IDatabaseService _databaseService;
-        public FirebaseAuthenticationHandler(FirebaseApp firebaseApp, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,IDatabaseService databaseService) : base(options, logger, encoder, clock)
+        private IUserBL _userBL;
+        public FirebaseAuthenticationHandler(FirebaseApp firebaseApp, IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock,IDatabaseService databaseService,IUserBL userBL) : base(options, logger, encoder, clock)
         {
             _firebaseApp = firebaseApp;
             _databaseService = databaseService;
+            _userBL = userBL;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -59,6 +62,7 @@ namespace FlyShoes.API.FirebaseHandler
                 {"@FirebaseID", firebaseID}
             };
             var user = _databaseService.QuerySingleUsingCommanText<User>(commandGetUser,param);
+
             _databaseService.CurrentUser = user;
 
             return new List<Claim>()

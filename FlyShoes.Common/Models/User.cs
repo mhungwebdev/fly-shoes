@@ -29,7 +29,6 @@ namespace FlyShoes.Common.Models
         [NotMap]
         public bool IsAdmin { get; set; }
 
-        [Required]
         public int? RankID { get; set; }
 
         public int? AmountSpent { get; set; }
