@@ -15,5 +15,11 @@ namespace FlyShoes.BL.Implements
         {
 
         }
+
+        public async Task<decimal> GetMaxPrice()
+        {
+            var command = "SELECT MAX(Price) FROM Shoes";
+            return await _dataBaseService.ExecuteScalarUsingCommandTextAsync<decimal>(command);
+        }
     }
 }

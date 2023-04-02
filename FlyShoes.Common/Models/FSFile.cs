@@ -18,7 +18,6 @@ namespace FlyShoes.Common.Models
         {
             FileID = Guid.NewGuid();
             File = file;
-
         }
     }
 }

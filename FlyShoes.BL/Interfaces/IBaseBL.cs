@@ -20,6 +20,7 @@ namespace FlyShoes.Interfaces
         Task<Entity> GetByID(string id);
 
         Task<List<Entity>> Paging(PagingPayload pagingPayLoad);
+        Task<ServiceResponse> GetTotal(PagingPayload pagingPayLoad);
 
         Task<ServiceResponse> Save(Entity entity);
 

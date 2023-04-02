@@ -10,5 +10,6 @@ namespace FlyShoes.BL.Interfaces
 {
     public interface IShoesBL : IBaseBL<Shoes>
     {
+        public Task<decimal> GetMaxPrice();
     }
 }

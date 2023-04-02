@@ -14,7 +14,7 @@ namespace FlyShoes.Common.Models
         public int? CategoryID { get; set; }
 
         [Required,Unique,Length(maxLength:100)]
-        public int? CategoryName { get; set; }
+        public string CategoryName { get; set; }
 
         [Required]
         public string? CategoryDescription { get; set; }

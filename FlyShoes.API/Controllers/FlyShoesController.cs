@@ -72,6 +72,16 @@ namespace FlyShoes.API.Controllers
             return result;
         }
 
+        [HttpPost("total")]
+        public async Task<ServiceResponse> GetTotal(PagingPayload pagingPayload)
+        {
+            var result = new ServiceResponse();
+
+            result = await _baseBL.GetTotal(pagingPayload);
+
+            return result;
+        }
+
         [HttpPost("save")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Save(Entity entity)

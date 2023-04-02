@@ -21,7 +21,7 @@ namespace FlyShoes.BL
 {
     public class BaseBL<Entity> : IBaseBL<Entity>
     {
-        IDatabaseService _dataBaseService;
+        protected IDatabaseService _dataBaseService;
         private static string _tableName;
         private static List<string> _fieldSearchs;
         private static bool _isMater;
@@ -228,27 +228,31 @@ namespace FlyShoes.BL
 
             foreach(var filterColumn in filterColumns)
             {
-                switch (filterColumn.FilterOperator)
+                if(filterColumn.Value != null)
                 {
-                    case Common.Enums.FilterOperator.Equal:
-                        result += $"({filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                        break;
-                    case Common.Enums.FilterOperator.NotEqual:
-                        result += $"({filterColumn.FieldName} <> {filterColumn.Value}) AND ";
-                        break;
-                    case Common.Enums.FilterOperator.Greater:
-                        result += $"({filterColumn.FieldName} > {filterColumn.Value}) AND ";
-                        break;
-                    case Common.Enums.FilterOperator.Less:
-                        result += $"({filterColumn.FieldName} < {filterColumn.Value}) AND ";
-                        break;
-                    case Common.Enums.FilterOperator.GreaterOrEqual:
-                        result += $"({filterColumn.FieldName} > {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                        break;
-                    case Common.Enums.FilterOperator.LessOrEqual:
-                        result += $"({filterColumn.FieldName} < {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                        break;
+                    switch (filterColumn.FilterOperator)
+                    {
+                        case Common.Enums.FilterOperator.Equal:
+                            result += $"({filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                            break;
+                        case Common.Enums.FilterOperator.NotEqual:
+                            result += $"({filterColumn.FieldName} <> {filterColumn.Value}) AND ";
+                            break;
+                        case Common.Enums.FilterOperator.Greater:
+                            result += $"({filterColumn.FieldName} > {filterColumn.Value}) AND ";
+                            break;
+                        case Common.Enums.FilterOperator.Less:
+                            result += $"({filterColumn.FieldName} < {filterColumn.Value}) AND ";
+                            break;
+                        case Common.Enums.FilterOperator.GreaterOrEqual:
+                            result += $"({filterColumn.FieldName} > {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                            break;
+                        case Common.Enums.FilterOperator.LessOrEqual:
+                            result += $"({filterColumn.FieldName} < {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                            break;
+                    }
                 }
+
             }
             result = result.Substring(0, result.Length - 5);
             result += ")";
@@ -841,6 +845,34 @@ namespace FlyShoes.BL
                 {$"@{fieldName}",fieldValue }
             };
             return await _dataBaseService.QueryUsingCommanTextAsync<Entity>(command,param);
+        }
+
+        public async Task<ServiceResponse> GetTotal(PagingPayload pagingPayLoad)
+        {
+            var result = new ServiceResponse();
+            var whereClause = BuildWhereClause(pagingPayLoad.FilterColumns);
+            var searhClause = BuidSearchClause(pagingPayLoad.Keyword);
+            var procedureName = "Proc_GetTotal";
+            var sortOrder = BuildSortOrder(pagingPayLoad.SortOrder);
+
+            var param = new Dictionary<string, object>() {
+                {"v_WhereClause",whereClause },
+                {"v_SearchClause",searhClause },
+                {"v_PageSize",pagingPayLoad.PageSize },
+                {"v_PageIndex",pagingPayLoad.PageIndex },
+                {"v_SortOrder", sortOrder},
+                {"v_Table", _tableName}
+            };
+
+            var total = await _dataBaseService.ExecuteScalarUsingStoreProcedureAsync<int>(procedureName, param);
+
+            result.Data = new {
+                Total = total,
+                CurrentPage = pagingPayLoad.PageIndex,
+                TotalPage = Math.Ceiling((float)total / pagingPayLoad.PageSize)
+            };
+
+            return result;
         }
     }
 }

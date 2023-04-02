@@ -20,13 +20,22 @@ namespace FlyShoes.API.Controllers
             _storageService = storageService;
         }
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile(List<IFormFile> files)
+        [HttpPost("upload-multi")]
+        public async Task<IActionResult> UploadFileMulti(List<IFormFile> files)
         {
             var fileUploads = files.Select(file => new FSFile(file)).ToList();
 
 
             var res = await _storageService.UploadFileMulti(fileUploads, Common.Enums.BucketEnum.TempBucket);
+
+            return Ok(res);
+        }
+
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadFile(IFormFile files)
+        {
+            var fsFile = new FSFile(files);
+            var res = await _storageService.UploadFile(fsFile, Common.Enums.BucketEnum.TempBucket);
 
             return Ok(res);
         }
