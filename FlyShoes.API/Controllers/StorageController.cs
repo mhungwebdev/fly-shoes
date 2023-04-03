@@ -32,9 +32,9 @@ namespace FlyShoes.API.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile(IFormFile files)
+        public async Task<IActionResult> UploadFile([FromForm]IFormFile file)
         {
-            var fsFile = new FSFile(files);
+            var fsFile = new FSFile(file);
             var res = await _storageService.UploadFile(fsFile, Common.Enums.BucketEnum.TempBucket);
 
             return Ok(res);
