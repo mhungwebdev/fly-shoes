@@ -26,6 +26,9 @@ namespace FlyShoes.Common.Models
         
         [Required]
         public string ColorName { get; set; }
+
+        [Required]
+        public string ColorCode { get; set; }
         
         [Required]
         public int Quantity { get; set; }

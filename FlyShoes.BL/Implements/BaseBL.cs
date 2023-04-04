@@ -27,7 +27,7 @@ namespace FlyShoes.BL
         private static bool _isMater;
         private static PropertyInfo _primaryKeyPropertyInfor;
         private static string _fieldPrimaryKey;
-        private static List<string> _tableRelateds;
+        private static List<string> _tableDetail;
 
         public static readonly DateFormatHandling JSONDateFormatHandling = DateFormatHandling.IsoDateFormat;
         public static readonly DateTimeZoneHandling JSONTimeZoneHandling = DateTimeZoneHandling.Local;
@@ -71,7 +71,7 @@ namespace FlyShoes.BL
                 _tableName = (configTable as ConfigTable).TableName;
                 _fieldSearchs = (configTable as ConfigTable).FieldSearch;
                 _isMater = (configTable as ConfigTable).IsMaster;
-                _tableRelateds = (configTable as ConfigTable).RelatedTables;
+                _tableDetail = (configTable as ConfigTable).DetailTables;
             }
             else
             {
@@ -286,9 +286,9 @@ namespace FlyShoes.BL
         {
             var result = new List<ValidateResult>();
 
-            if(_tableRelateds != null && _tableRelateds.Count > 0)
+            if(_tableDetail != null && _tableDetail.Count > 0)
             {
-                foreach(var tableRelated in _tableRelateds)
+                foreach(var tableRelated in _tableDetail)
                 {
                     var checkRelatedTable = $"SELECT COUNT(1) FROM {tableRelated} WHERE {_fieldPrimaryKey} = @ID";
                     var param = new Dictionary<string, object>()
@@ -316,7 +316,7 @@ namespace FlyShoes.BL
             var commandDelete = $"DELETE FROM {_tableName} WHERE {_fieldPrimaryKey} = @ID;";
             
             var detailDeletes = string.Empty;
-            foreach(var table in _tableRelateds)
+            foreach(var table in _tableDetail)
             {
                 detailDeletes += $"DELETE FROM {table} WHERE {_fieldPrimaryKey} = @ID;";
             }
@@ -804,7 +804,7 @@ namespace FlyShoes.BL
             }
         }
 
-        public void AfterSave(Entity entity, IDbConnection connection, IDbTransaction transaction)
+        public virtual void AfterSave(object entity, IDbConnection connection, IDbTransaction transaction)
         {
 
         }

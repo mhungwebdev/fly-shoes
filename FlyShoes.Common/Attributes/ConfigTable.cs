@@ -17,18 +17,18 @@ namespace FlyShoes.Common
 
         public bool IsMaster { get; set; }
 
-        public List<string> RelatedTables { get; set; }
+        public List<string> DetailTables { get; set; }
 
-        public ConfigTable(string tableName = "",string fieldSearch = "",bool isMaster = false,string relatedTables = "") { 
+        public ConfigTable(string tableName = "",string fieldSearch = "",bool isMaster = false,string detailTables = "") { 
             TableName = tableName;
             IsMaster = isMaster;
             if (!string.IsNullOrWhiteSpace(fieldSearch))
             {
                 FieldSearch = fieldSearch.Split(";").ToList();
             }
-            if (!string.IsNullOrWhiteSpace(relatedTables))
+            if (!string.IsNullOrWhiteSpace(detailTables))
             {
-                RelatedTables = relatedTables.Split(";").ToList();
+                DetailTables = detailTables.Split(";").ToList();
             }
         }
     }

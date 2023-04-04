@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
-    [ConfigTable(tableName:"Shoes",fieldSearch:"ShoesName",isMaster:true)]
+    [ConfigTable(tableName:"Shoes",fieldSearch:"ShoesName",isMaster:true,detailTables:"ShoesDetail")]
     public class Shoes : BaseModel
     {
         [PrimaryKey]
@@ -32,6 +32,8 @@ namespace FlyShoes.Common.Models
 
         [Required]
         public string BrandName { get; set;}
+
+        public string Description { get; set;}
 
         [NotMap,Detail("SELECT * FROM ShoesDetail WHERE ShoesID = @MasterID","ShoesDetails",typeof(List<ShoesDetail>))]
         public List<ShoesDetail> ShoesDetails { get; set; }
