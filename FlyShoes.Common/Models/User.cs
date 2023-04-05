@@ -35,8 +35,5 @@ namespace FlyShoes.Common.Models
 
         [Phone]
         public string Phone { get; set; }
-
-        [NotMap]
-        public bool IsReceiveEmailNewShoes { get; set; }
     }
 }

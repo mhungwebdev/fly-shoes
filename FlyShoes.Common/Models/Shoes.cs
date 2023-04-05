@@ -19,7 +19,7 @@ namespace FlyShoes.Common.Models
         public decimal Price { get; set; }
 
         [Required]
-        public string ShoesImage { get; set; }
+        public string ShoesImages { get; set; }
         
         [Required]        
         public int? CategoryID { get; set; }
@@ -32,8 +32,6 @@ namespace FlyShoes.Common.Models
 
         [Required]
         public string BrandName { get; set;}
-
-        public string Description { get; set;}
 
         [NotMap,Detail("SELECT * FROM ShoesDetail WHERE ShoesID = @MasterID","ShoesDetails",typeof(List<ShoesDetail>))]
         public List<ShoesDetail> ShoesDetails { get; set; }

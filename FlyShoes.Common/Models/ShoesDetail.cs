@@ -32,8 +32,5 @@ namespace FlyShoes.Common.Models
         
         [Required]
         public int Quantity { get; set; }
-        
-        [Required]
-        public string ShoesImage { get; set; }
     }
 }

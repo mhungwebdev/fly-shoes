@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.BL.Interfaces
 {
-    public interface IOrderBL : IBaseBL<Order>
+    public interface IOrderShoesBL : IBaseBL<OrderShoes>
     {
     }
 }

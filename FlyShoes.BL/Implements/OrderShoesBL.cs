@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.BL.Base
 {
-    public class OrderBL : BaseBL<Order>,IOrderBL
+    public class OrderShoesBL : BaseBL<OrderShoes>,IOrderShoesBL
     {
-        public OrderBL(IDatabaseService databaseService) : base(databaseService)
+        public OrderShoesBL(IDatabaseService databaseService) : base(databaseService)
         {
 
         }

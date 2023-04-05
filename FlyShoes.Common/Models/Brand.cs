@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
-    [ConfigTable(tableName:"Brand",relatedTables:"Shoes")]
+    [ConfigTable(tableName: "Brand")]
     public class Brand : BaseModel
     {
         [PrimaryKey]

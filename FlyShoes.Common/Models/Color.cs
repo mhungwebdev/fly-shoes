@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
-    [ConfigTable(tableName:"Color",relatedTables:"ShoesDetail")]
+    [ConfigTable(tableName:"Color")]
     public class Color : BaseModel
     {
         [PrimaryKey]
@@ -18,7 +18,5 @@ namespace FlyShoes.Common.Models
 
         [Unique,Required]
         public string ColorCode { get; set; }
-        
-        public string Description { get; set; }
     }
 }

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlyShoes.API.Controllers
 {
-    public class OrderController : FlyShoesController<Order>
+    public class OrderShoesController : FlyShoesController<OrderShoes>
     {
-        public OrderController(IOrderBL orderBL):base(orderBL)
+        public OrderShoesController(IOrderShoesBL orderBL):base(orderBL)
         {
 
         }

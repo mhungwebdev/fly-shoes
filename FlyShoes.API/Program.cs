@@ -27,7 +27,7 @@ builder.Services.AddScoped<ICartDetailBL, CartDetailBL>();
 builder.Services.AddScoped<ICategoryBL, CategoryBL>();
 builder.Services.AddScoped<IColorBL, ColorBL>();
 builder.Services.AddScoped<IEmailTemplateBL, EmailTemplateBL>();
-builder.Services.AddScoped<IOrderBL, OrderBL>();
+builder.Services.AddScoped<IOrderShoesBL, OrderShoesBL>();
 builder.Services.AddScoped<IOrderDetailBL, OrderDetailBL>();
 builder.Services.AddScoped<IRankCustomerBL, RankCustomerBL>();
 builder.Services.AddScoped<IShoesBL, ShoesBL>();

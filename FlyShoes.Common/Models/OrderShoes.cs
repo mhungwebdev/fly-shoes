@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
-    [ConfigTable(tableName:"Order")]
-    public class Order : BaseModel
+    [ConfigTable(tableName:"OrderShoes")]
+    public class OrderShoes : BaseModel
     {
         [PrimaryKey]
         public int? OrderID { get; set; }

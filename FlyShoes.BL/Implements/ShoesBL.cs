@@ -37,28 +37,28 @@ namespace FlyShoes.BL.Implements
 
         private void SendMailNotification()
         {
-            var commandGetUser = "SELECT DISTINCT u.Email FROM User u WHERE u.IsReceiveEmailNewShoes IS TRUE;";
-            var emails = _dataBaseService.QueryUsingCommanText<string>(commandGetUser);
-            if(emails != null && emails.Count > 0)
-            {
-                var emailSend = new FlyEmail()
-                {
-                    From = "mhung.haui.webdev@gmail.com",
-                    Cc = emails,
-                    EmailContent = "Chúng tôi có sản phẩm mới ! Hãy nhanh tay sở hữu",
-                    Subject = "Fly Shoes - Thông báo sản phẩm mới",
-                    To = "mahhugcoder@gmail.com"
-                };
-                _emailService.SendMail(emailSend);
-            }
+            //var commandGetUser = "SELECT DISTINCT u.Email FROM User u WHERE u.IsReceiveEmailNewShoes IS TRUE;";
+            //var emails = _dataBaseService.QueryUsingCommanText<string>(commandGetUser);
+            //if(emails != null && emails.Count > 0)
+            //{
+            //    var emailSend = new FlyEmail()
+            //    {
+            //        From = "mhung.haui.webdev@gmail.com",
+            //        Cc = emails,
+            //        EmailContent = "Chúng tôi có sản phẩm mới ! Hãy nhanh tay sở hữu",
+            //        Subject = "Fly Shoes - Thông báo sản phẩm mới",
+            //        To = "mahhugcoder@gmail.com"
+            //    };
+            //    _emailService.SendMail(emailSend);
+            //}
         }
 
         private void InsertShoesDetail(object entity, IDbConnection connection, IDbTransaction transaction)
         {
             var shoes = JsonSerializer.Deserialize<Shoes>(JsonSerializer.Serialize(entity));
             StringBuilder commandInsertDetail = new StringBuilder();
-            var properties = new List<string>() { "SizeID", "ColorID", "Quantity", "ShoesImage", "ColorName", "SizeName", "ColorCode" };
-            commandInsertDetail.Append("INSERT INTO ShoesDetail (ShoesID,SizeID,ColorID,Quantity,ShoesImage,ColorName,SizeName,ColorCode) VALUES ");
+            var properties = new List<string>() { "SizeID", "ColorID", "Quantity", "ColorName", "SizeName", "ColorCode" };
+            commandInsertDetail.Append("INSERT INTO ShoesDetail (ShoesID,SizeID,ColorID,Quantity,ColorName,SizeName,ColorCode) VALUES ");
 
             var param = new Dictionary<string, object>();
             var values = new List<string>();
@@ -73,6 +73,7 @@ namespace FlyShoes.BL.Implements
                 }
                 value = value.Substring(0, value.Length - 1) + ")";
                 values.Add(value);
+                index++;
             }
             param.Add("@ShoesID", shoes.ShoesID);
             commandInsertDetail.Append(string.Join(",", values));
