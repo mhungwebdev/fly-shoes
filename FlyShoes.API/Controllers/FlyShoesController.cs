@@ -63,7 +63,7 @@ namespace FlyShoes.API.Controllers
         }
 
         [HttpPost("paging")]
-        public async Task<ServiceResponse> Paging(PagingPayload pagingPayload)
+        public virtual async Task<ServiceResponse> Paging(PagingPayload pagingPayload)
         {
             var result = new ServiceResponse();
 
