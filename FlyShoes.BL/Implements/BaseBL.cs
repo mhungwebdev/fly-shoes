@@ -874,5 +874,30 @@ namespace FlyShoes.BL
 
             return result;
         }
+
+        public async Task<ServiceResponse> UpdateSingleField(InfoUpdateField updateInfo,string id)
+        {
+            var result = new ServiceResponse();
+
+            var prop = typeof(Entity).GetProperty(updateInfo.FieldName);
+            var attr = prop.GetCustomAttribute(typeof(AllowUpdateSingle));
+
+            if(attr != null)
+            {
+                var commandUpdate = $"UPDATE {_tableName} SET {updateInfo.FieldName} = @FieldValue WHERE {_fieldPrimaryKey} = @ID";
+                var param = new Dictionary<string, object>()
+                {
+                    {"@FieldValue",updateInfo.FieldValue },
+                    {"@ID",id }
+                };
+                result.Success = _dataBaseService.ExecuteUsingCommandText(commandUpdate, param) > 0;
+            }
+            else
+            {
+                result.Success = false;
+            }
+
+            return result;
+        }
     }
 }

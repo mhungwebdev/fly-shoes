@@ -14,6 +14,7 @@ namespace FlyShoes.Interfaces
         Task<ServiceResponse> Delete(string id);
 
         Task<List<Entity>> GetByField(string fieldName,string fieldValue);
+        Task<ServiceResponse> UpdateSingleField(InfoUpdateField updateInfo,string id);
 
         Task<List<Entity>> GetAll();
 

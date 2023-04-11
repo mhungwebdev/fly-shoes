@@ -1,5 +1,4 @@
-﻿using Firebase.Auth;
-using FlyShoes.BL.Interfaces;
+﻿using FlyShoes.BL.Interfaces;
 using FlyShoes.Common.Enums;
 using FlyShoes.Common.Models;
 using FlyShoes.DAL.Interfaces;
@@ -12,31 +11,62 @@ namespace FlyShoes.API.Controllers
     public class UserController : FlyShoesController<Common.Models.User>
     {
         private IUserBL _userBL;
-        public UserController(IUserBL userBL) : base(userBL)
+        IFirestoreService _firestoreService;
+
+        public UserController(IUserBL userBL,IFirestoreService firestoreService) : base(userBL)
         {
             _userBL = userBL;
+            _firestoreService = firestoreService;
         }
 
         [HttpPost("start")]
-        public async Task<ServiceResponse> GetStart(Dictionary<string, object> userFirebase)
+        public async Task<ServiceResponse> GetStart(User user)
         {
             var result = new ServiceResponse();
-            var firebaseID = userFirebase["uid"];
-            var email = userFirebase["email"];
 
-            var newUser = new Common.Models.User()
+            user.IsAdmin = false;
+            user.AmountSpent = 0;
+            user.State = ModelStateEnum.Insert;
+
+            await _userBL.Save(user);
+            var users = await _userBL.GetByField("FirebaseID", user.FirebaseID);
+            await _firestoreService.PushNotification(new Notification()
             {
-                Email = email.ToString(),
-                FirebaseID = firebaseID.ToString(),
-                IsAdmin = false,
-                AmountSpent = 0,
-                State = ModelStateEnum.Insert,
-                FullName = email.ToString()
-            };
+                IsRead = false,
+                Message = "Chào mừng bạn đến với Fly Shoes.",
+                UserID = users.FirstOrDefault().UserID,
+            });
 
-            await _userBL.Save(newUser);
-            result.Data = await _userBL.GetByField("FirebaseID", firebaseID.ToString());
+            result.Data = users;
+            return result;
+        }
 
+        [HttpPost("start-with-social")]
+        public async Task<ServiceResponse> StartWithSocial(User user)
+        {
+            var result = new ServiceResponse();
+
+            var userExsist = await _userBL.GetByField("FirebaseID", user.FirebaseID);
+            if(userExsist != null & userExsist.Count > 0)
+            {
+                result.Data = userExsist;
+            }
+            else
+            {
+                user.IsAdmin = false;
+                user.AmountSpent = 0;
+                user.State = ModelStateEnum.Insert;
+
+                await _userBL.Save(user);
+                var users = await _userBL.GetByField("FirebaseID", user.FirebaseID);
+                await _firestoreService.PushNotification(new Notification()
+                {
+                    IsRead = false,
+                    Message = "Chào mừng bạn đến với Fly Shoes.",
+                    UserID = users.FirstOrDefault().UserID,
+                });
+                result.Data = users;
+            }
 
             return result;
         }

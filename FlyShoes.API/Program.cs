@@ -11,10 +11,13 @@ using FlyShoes.Core.Interfaces;
 using FlyShoes.DAL.Implements;
 using FlyShoes.DAL.Interfaces;
 using FlyShoes.Interfaces;
+using Google.Api;
+using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using System.Text.Json.Serialization;
+using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IFirebaseAuthClient, FirebaseAuthService>();

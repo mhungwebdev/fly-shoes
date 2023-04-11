@@ -127,5 +127,14 @@ namespace FlyShoes.API.Controllers
 
             return result;
         }
+
+        [HttpPost("update-field/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = RoleTypeConstant.CUSTOMER)]
+        public async Task<IActionResult> UpdateSingleField(int id,[FromBody]InfoUpdateField updateInfo)
+        {
+            if (!_baseBL.ValidateRole(Common.ActionEnum.Update)) return StatusCode(403);
+
+            return Ok(await _baseBL.UpdateSingleField(updateInfo, id.ToString()));
+        }
     }
 }

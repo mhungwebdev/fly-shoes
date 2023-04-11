@@ -18,7 +18,7 @@ namespace FlyShoes.Common.Models
         [Required,Length(maxLength:100)]
         public string FullName { get; set; }
 
-        [Required,Email]
+        [Required,Email,AllowUpdateSingle]
         public string Email { get; set; }
 
         [Required,Unique]
@@ -35,5 +35,8 @@ namespace FlyShoes.Common.Models
 
         [Phone]
         public string Phone { get; set; }
+
+        [AllowUpdateSingle]
+        public bool ReceiveEmail { get; set; }
     }
 }

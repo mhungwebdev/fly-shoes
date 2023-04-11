@@ -68,7 +68,6 @@ namespace FlyShoes.API.FirebaseHandler
             return new List<Claim>()
             {
                 new Claim("id", claims["user_id"].ToString()),
-                new Claim("email", claims["email"].ToString()),
                 new Claim(ClaimTypes.Role,user.IsAdmin ? RoleTypeConstant.ADMIN : RoleTypeConstant.CUSTOMER)
             };
 

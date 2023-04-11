@@ -14,10 +14,12 @@ namespace FlyShoes.API.Controllers
     public class AuthenController : ControllerBase
     {
         IFirebaseAuthClient _firebaseService;
+        IFirestoreService _firestoreService;
 
-        public AuthenController(IFirebaseAuthClient firebaseService)
+        public AuthenController(IFirebaseAuthClient firebaseService,IFirestoreService firestoreService)
         {
             _firebaseService = firebaseService;
+            _firestoreService = firestoreService;
         }
 
         [HttpPost("login")]

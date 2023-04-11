@@ -49,4 +49,10 @@ namespace FlyShoes.Common
             Type = type;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class AllowUpdateSingle : Attribute
+    {
+
+    }
 }

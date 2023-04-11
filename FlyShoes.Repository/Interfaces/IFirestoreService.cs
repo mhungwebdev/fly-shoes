@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlyShoes.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace FlyShoes.DAL.Interfaces
 {
     public interface IFirestoreService
     {
-        void PushNotification(int userID,string notificationContent,string reference);
+        Task PushNotification(Notification notification);
     }
 }
