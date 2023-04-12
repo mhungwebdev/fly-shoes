@@ -18,6 +18,8 @@ namespace FlyShoes.Common.Models
 
         public List<FilterColumn> FilterColumns { get; set; }
 
+        public Dictionary<string,object>? CustomParam { get; set; }
+
         public PagingPayload() {
             this.PageSize = 15;
             this.PageIndex = 1;

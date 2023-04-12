@@ -31,6 +31,8 @@ namespace FlyShoes.Common.Enums
         /// <summary>
         /// So sánh nhỏ hơn hoặc bằng
         /// </summary>
-        LessOrEqual
+        LessOrEqual,
+        EqualNull,
+        NotEqualNull,
     }
 }

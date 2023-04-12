@@ -38,8 +38,9 @@ namespace FlyShoes.API.Controllers
             {
                 var commandGetVoucher = "SELECT * FROM Voucher v WHERE v.VoucherID IN ({0}) AND v.VoucherID NOT IN(SELECT vu.VoucherID FROM VoucherUsed vu WHERE vu.VoucherID IN ({1}) AND vu.UserID = @UserID) AND v.IsActive IS TRUE AND v.EndDate > @NOW AND v.Quantity > 0;";
                 commandGetVoucher = string.Format(commandGetVoucher, string.Join(",", idVouchers), string.Join(",", idVouchers));
+                var id = pagingPayload.CustomParam.GetValue<int>("UserID");
                 var param = new Dictionary<string, object>() {
-                    { "@UserID", _databaseService.CurrentUser?.UserID },
+                    { "@UserID", id },
                     {"@NOW",DateTime.Now }
                 };
                 var vouchers = _databaseService.QueryUsingCommanText<Voucher>(commandGetVoucher,param);

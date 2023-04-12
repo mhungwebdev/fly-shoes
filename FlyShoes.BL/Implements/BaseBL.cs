@@ -228,9 +228,11 @@ namespace FlyShoes.BL
 
             foreach(var filterColumn in filterColumns)
             {
-                if(filterColumn.Value != null)
+                if(filterColumn.FilterOperator != FilterOperator.EqualNull && filterColumn.FilterOperator != FilterOperator.NotEqualNull)
                 {
-                    switch (filterColumn.FilterOperator)
+                    if(filterColumn.Value != null)
+                    {
+                        switch (filterColumn.FilterOperator)
                     {
                         case Common.Enums.FilterOperator.Equal:
                             result += $"({filterColumn.FieldName} = {filterColumn.Value}) AND ";
@@ -251,6 +253,12 @@ namespace FlyShoes.BL
                             result += $"({filterColumn.FieldName} < {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
                             break;
                     }
+                    }
+                }
+                else
+                {
+                    var not = filterColumn.FilterOperator == FilterOperator.NotEqualNull ? "NOT" : "";
+                    result += $"({filterColumn.FieldName} IS {not} NULL) AND ";
                 }
 
             }
@@ -262,7 +270,7 @@ namespace FlyShoes.BL
 
         public string BuildSortOrder(SortOrder sortOrder)
         {
-            if (sortOrder != null) return null;
+            if (sortOrder == null && string.IsNullOrEmpty(sortOrder.FieldSort)) return null;
 
             var sortType = SortConstant.DESC;
             switch (sortOrder.SortType)
