@@ -32,6 +32,10 @@ namespace FlyShoes.Common.Enums
         /// <summary>
         /// Thiếu dữ liệu
         /// </summary>
-        RequiredInValid
+        RequiredInValid,
+        /// <summary>
+        /// Đã tồn tại
+        /// </summary>
+        Exist
     }
 }

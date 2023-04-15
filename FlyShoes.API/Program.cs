@@ -53,7 +53,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(o =>
     o.UseMemberCasing();
 });
 
-builder.Services.AddSingleton(FirebaseApp.Create());
+var firebaseApp = FirebaseApp.Create(new AppOptions()
+{
+    Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile("./firebase-config.json")
+});
+builder.Services.AddSingleton(firebaseApp);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddScheme<AuthenticationSchemeOptions,FirebaseAuthenticationHandler>(JwtBearerDefaults.AuthenticationScheme,(o) => { });
 

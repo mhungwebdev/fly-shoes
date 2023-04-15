@@ -10,5 +10,6 @@ namespace FlyShoes.BL.Interfaces
 {
     public interface IVoucherBL : IBaseBL<Voucher>
     {
+        bool CheckVoucherUsage(int voucherID,int? userID);
     }
 }

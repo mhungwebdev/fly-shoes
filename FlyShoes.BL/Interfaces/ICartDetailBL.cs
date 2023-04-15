@@ -10,5 +10,6 @@ namespace FlyShoes.BL.Interfaces
 {
     public interface ICartDetailBL : IBaseBL<CartDetail>
     {
+        Task<List<CartDetail>> GetCartDetailByUser(int userID);
     }
 }

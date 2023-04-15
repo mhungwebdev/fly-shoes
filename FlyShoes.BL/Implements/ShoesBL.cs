@@ -89,5 +89,22 @@ namespace FlyShoes.BL.Implements
                 throw new FSException(ex.Message);
             }
         }
+
+        public override void GetMoreInfo(object entity)
+        {
+            base.GetMoreInfo(entity);
+            var voucherID = entity.GetValue<int>("VoucherID");
+
+            if(voucherID != null)
+            {
+                var commandGetVoucher = "SELECT * FROM Voucher v WHERE v.VoucherID = @VoucherID;";
+                var param = new Dictionary<string, object>()
+                {
+                    {"@VoucherID",voucherID }
+                };
+                var voucher = _dataBaseService.QuerySingleUsingCommanText<Voucher>(commandGetVoucher, param);
+                entity.SetValue("Voucher", voucher);
+            }
+        }
     }
 }

@@ -50,5 +50,17 @@ namespace FlyShoes.BL.Implements
                 throw new FSException(ex.Message);
             }
         }
+
+        public bool CheckVoucherUsage(int voucherID, int? userID)
+        {
+            var command = "SELECT COUNT(1) FROM VoucherUsed WHERE VoucherID = @VoucherID AND UserID = @UserID";
+            var param = new Dictionary<string, object>()
+            {
+                {"@VoucherID",voucherID },
+                {"@UserID",userID }
+            };
+
+            return _databaseService.ExecuteScalarUsingCommandText<int>(command,param) == 0;
+        }
     }
 }

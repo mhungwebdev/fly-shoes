@@ -148,9 +148,16 @@ namespace FlyShoes.BL
                 result.SetValue(property, JsonConvert.DeserializeObject(JsonConvert.SerializeObject(detail,_jsonSerializerSettings), typeDetail, _jsonSerializerSettings));
             }
 
+            GetMoreInfo(result);
+
             return result;
         }
         #endregion
+
+        public virtual void GetMoreInfo(object entity)
+        {
+
+        }
 
         #region Paging
         public async Task<List<Entity>> Paging(PagingPayload pagingPayLoad)
@@ -324,9 +331,12 @@ namespace FlyShoes.BL
             var commandDelete = $"DELETE FROM {_tableName} WHERE {_fieldPrimaryKey} = @ID;";
             
             var detailDeletes = string.Empty;
-            foreach(var table in _tableDetail)
+            if(_tableDetail != null && _tableDetail.Count > 0)
             {
-                detailDeletes += $"DELETE FROM {table} WHERE {_fieldPrimaryKey} = @ID;";
+                foreach(var table in _tableDetail)
+                {
+                    detailDeletes += $"DELETE FROM {table} WHERE {_fieldPrimaryKey} = @ID;";
+                }
             }
 
             var param = new Dictionary<string, object>()

@@ -14,14 +14,26 @@ namespace FlyShoes.Common.Models
 
         [Required]
         public int? UserID { get; set; }
-        
+
         [Required]
-        public int? ShoesDetailID { get; set; }
-       
-        [Required]
-        public int? Quantity { get; set; }
-        
-        [Required]
-        public string ColorName { get; set; }
+        public int? ShoesID { get; set; }
+
+        [NotMap]
+        public string ShoesImages { get; set; }
+
+        [NotMap]
+        public string ShoesName { get; set; }
+
+        [NotMap]
+        public int? VoucherID { get; set; }
+
+        [NotMap]
+        public int? Total { get; set; }
+
+        [NotMap]
+        public Voucher? Voucher { get; set; }
+
+        [NotMap]
+        public decimal Price { get; set; }
     }
 }
