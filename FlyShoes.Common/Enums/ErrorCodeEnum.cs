@@ -36,6 +36,11 @@ namespace FlyShoes.Common.Enums
         /// <summary>
         /// Đã tồn tại
         /// </summary>
-        Exist
+        Exist,
+        /// <summary>
+        /// Số lượng sản phẩm không đủ
+        /// </summary>
+        ProductNotEnough,
+        VoucherNotEnough
     }
 }

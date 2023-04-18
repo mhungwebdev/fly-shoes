@@ -20,6 +20,7 @@ namespace FlyShoes.Common.Models
         public ServiceResponse()
         {
             Success = true;
+            ValidateInfo= new List<ValidateResult>();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace FlyShoes.Common.Models
         public int? OrderID { get; set; }
         [Required]
         public int? UserID { get; set; }
-        public int? VoucherID { get; set; }
         [Required]
         public int? Status { get; set; }
         [Required,Length(maxLength:100)]
@@ -22,5 +21,9 @@ namespace FlyShoes.Common.Models
         public string ReceiverPhone { get; set; }
         [Required]
         public string ReceiverAddress { get; set; }
+        [NotMap]
+        public List<OrderDetail> OrderDetails { get; set; }
+
+        public decimal TotalBill { get; set; }
     }
 }

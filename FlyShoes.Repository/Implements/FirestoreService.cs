@@ -1,5 +1,6 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
+using FirebaseAdmin;
 using FlyShoes.Common.Models;
 using FlyShoes.DAL.Interfaces;
 using Google.Cloud.Firestore;
@@ -22,7 +23,10 @@ namespace FlyShoes.DAL.Implements
 
         public FirestoreService(IConfiguration configuration)
         {
-            _firebaseClient = FirestoreDb.Create("fly-shoes-store");
+            FirestoreClientBuilder builder = new FirestoreClientBuilder();
+            builder.Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile("./FirebaseConfig/firebase-config.json");
+
+            _firebaseClient = FirestoreDb.Create("fly-shoes-store",builder.Build());
             _notification = _firebaseClient.Collection("notification");
         }
 

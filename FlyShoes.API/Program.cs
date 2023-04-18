@@ -32,7 +32,6 @@ builder.Services.AddScoped<IColorBL, ColorBL>();
 builder.Services.AddScoped<IEmailTemplateBL, EmailTemplateBL>();
 builder.Services.AddScoped<IOrderShoesBL, OrderShoesBL>();
 builder.Services.AddScoped<IOrderDetailBL, OrderDetailBL>();
-builder.Services.AddScoped<IRankCustomerBL, RankCustomerBL>();
 builder.Services.AddScoped<IShoesBL, ShoesBL>();
 builder.Services.AddScoped<IShoesDetailBL, ShoesDetailBL>();
 builder.Services.AddScoped<ISizeBL, SizeBL>();
@@ -55,7 +54,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(o =>
 
 var firebaseApp = FirebaseApp.Create(new AppOptions()
 {
-    Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile("./firebase-config.json")
+    Credential = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile("./FirebaseConfig/firebase-config.json")
 });
 builder.Services.AddSingleton(firebaseApp);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

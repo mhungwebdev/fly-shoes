@@ -1,4 +1,5 @@
-﻿using FlyShoes.Common.Models;
+﻿using FlyShoes.Common.Enums;
+using FlyShoes.Common.Models;
 using FlyShoes.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,8 @@ namespace FlyShoes.BL.Interfaces
 {
     public interface IOrderShoesBL : IBaseBL<OrderShoes>
     {
+        public Task<ServiceResponse> Order(int paymentType, OrderShoes orderShoes);
+
+        public Task<List<OrderShoes>> GetOrdersByUser();
     }
 }

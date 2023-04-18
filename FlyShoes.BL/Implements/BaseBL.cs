@@ -378,7 +378,7 @@ namespace FlyShoes.BL
             connection.Open();
             var transaction = connection.BeginTransaction();
 
-            DoSave(entity,connection,transaction);
+            result.Success = DoSave(entity,connection,transaction) > 0;
 
             AfterSave(entity, connection, transaction);
 
@@ -501,7 +501,7 @@ namespace FlyShoes.BL
         public int DoInsertMulti(List<Entity> entities, IDbConnection connection, IDbTransaction transaction)
         {
             var propInserts = typeof(Entity).GetProperties().Where(prop => !Attribute.IsDefined(prop, typeof(NotMap)));
-            var commandInsert = $"SELECT * FROM {_tableName} (" + "{0}) VALUES ";
+            var commandInsert = $"INSERT INTO {_tableName} (" + "{0}) VALUES ";
             commandInsert = string.Format(commandInsert,string.Join(",",propInserts.Select(prop => prop.Name)));
 
             var index = 0;
@@ -523,6 +523,31 @@ namespace FlyShoes.BL
             return _dataBaseService.ExecuteUsingCommandText(commandInsert,param,transaction,connection);
         }
 
+        public int DoInsertMulti<Entity>(List<Entity> entities, IDbConnection connection, IDbTransaction transaction)
+        {
+            var propInserts = typeof(Entity).GetProperties().Where(prop => !Attribute.IsDefined(prop, typeof(NotMap)));
+            var tableName = ((typeof(Entity).GetCustomAttributes(typeof(ConfigTable), true).FirstOrDefault()) as ConfigTable).TableName;
+            var commandInsert = $"INSERT INTO {tableName} (" + "{0}) VALUES ";
+            commandInsert = string.Format(commandInsert, string.Join(",", propInserts.Select(prop => prop.Name)));
+
+            var index = 0;
+            var param = new Dictionary<string, object>();
+            foreach (var entity in entities)
+            {
+                var valueInsert = "(";
+                foreach (var prop in propInserts)
+                {
+                    valueInsert += $"@{prop.Name}_{index},";
+                    param.Add($"@{prop.Name}_{index}", prop.GetValue(entity));
+                }
+                valueInsert = valueInsert.Substring(0, valueInsert.Length - 1) + "),";
+                commandInsert += valueInsert;
+                index++;
+            }
+            commandInsert = commandInsert.Substring(0, commandInsert.Length - 1) + ";";
+
+            return _dataBaseService.ExecuteUsingCommandText(commandInsert, param, transaction, connection);
+        }
         public int DoUpdateMulti(List<Entity> entities, IDbConnection connection, IDbTransaction transaction)
         {
             var propUpdates = typeof(Entity).GetType().GetProperties().Where(prop => !Attribute.IsDefined(prop,typeof(NotMap)) && !Attribute.IsDefined(prop,typeof(PrimaryKey)));
@@ -721,12 +746,12 @@ namespace FlyShoes.BL
         #endregion
 
         #region Do Update
-        public virtual void DoUpdate(Entity entity, IDbConnection connection, IDbTransaction transaction)
+        public virtual int DoUpdate(Entity entity, IDbConnection connection, IDbTransaction transaction)
         {
-            var procUpdate = GetProcInsert();
+            var procUpdate = GetProcUpdate();
             var param = BuildParamFromEntity(entity);
 
-            _dataBaseService.ExecuteUsingStoredProcedure(procUpdate, param, transaction, connection);
+            return _dataBaseService.ExecuteUsingStoredProcedure(procUpdate, param, transaction, connection);
         }
         #endregion
 
@@ -801,7 +826,7 @@ namespace FlyShoes.BL
             }
         }
 
-        public void DoSave(Entity entity,IDbConnection connection,IDbTransaction transaction)
+        public int DoSave(Entity entity,IDbConnection connection,IDbTransaction transaction)
         {
             switch (entity.GetValue<ModelStateEnum>("State"))
             {
@@ -810,9 +835,10 @@ namespace FlyShoes.BL
                 case ModelStateEnum.Insert:
                     var id = DoInsert(entity,connection,transaction);
                     entity.SetPrimaryKey<Entity>(id);
+                    return id;
                     break;
                 case ModelStateEnum.Update:
-                    DoUpdate(entity, connection, transaction);
+                    return DoUpdate(entity, connection, transaction);
                     break;
                 case ModelStateEnum.Delete:
                     DoDelete(entity.GetPrimaryKey<Entity>().ToString(),connection,transaction);
@@ -820,6 +846,7 @@ namespace FlyShoes.BL
                 case ModelStateEnum.Duplicate:
                     break;
             }
+            return 0;
         }
 
         public virtual void AfterSave(object entity, IDbConnection connection, IDbTransaction transaction)

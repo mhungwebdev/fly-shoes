@@ -2,6 +2,7 @@
 using FlyShoes.Common;
 using FlyShoes.Common.Models;
 using FlyShoes.Core.Interfaces;
+using FlyShoes.DAL.Implements;
 using FlyShoes.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -105,6 +106,45 @@ namespace FlyShoes.BL.Implements
                 var voucher = _dataBaseService.QuerySingleUsingCommanText<Voucher>(commandGetVoucher, param);
                 entity.SetValue("Voucher", voucher);
             }
+        }
+
+        public async Task<List<Shoes>> GetShoesForPayment(List<int> shoesIDs, int userID)
+        {
+            var commandShoesPayments = $"SELECT * FROM Shoes WHERE ShoesID IN ({string.Join(",", shoesIDs)})";
+            var shoesPayments = await _dataBaseService.QueryUsingCommanTextAsync<Shoes>(commandShoesPayments);
+
+            if (shoesPayments != null && shoesPayments.Count > 0)
+            {
+                var idVouchers = shoesPayments.Where(s => s.VoucherID != null)?.Select(s => s.VoucherID).ToList();
+                foreach(var shoesPayment in shoesPayments)
+                {
+                    var getShoesDetail = "SELECT * FROM ShoesDetail WHERE ShoesID = @ShoesID";
+                    var param = new Dictionary<string, object>()
+                    {
+                        {"@ShoesID",shoesPayment.ShoesID }
+                    };
+                    shoesPayment.ShoesDetails = _dataBaseService.QueryUsingCommanText<ShoesDetail>(getShoesDetail, param);
+                }
+
+                var commandGetVoucher = "SELECT * FROM Voucher v WHERE v.VoucherID IN ({0}) AND v.VoucherID NOT IN(SELECT vu.VoucherID FROM VoucherUsed vu WHERE vu.VoucherID IN ({1}) AND vu.UserID = @UserID) AND v.IsActive IS TRUE AND v.EndDate > @NOW AND v.Quantity > 0;";
+                commandGetVoucher = string.Format(commandGetVoucher, string.Join(",", idVouchers), string.Join(",", idVouchers));
+                var paramGetVoucher = new Dictionary<string, object>() {
+                    { "@UserID", userID },
+                    {"@NOW",DateTime.Now }
+                };
+                var vouchers = _dataBaseService.QueryUsingCommanText<Voucher>(commandGetVoucher, paramGetVoucher);
+
+                if (vouchers != null && vouchers.Count > 0)
+                {
+                    foreach (var s in shoesPayments)
+                    {
+                        var voucher = vouchers.Find(voucher => voucher.VoucherID == s.VoucherID);
+                        s.Voucher = voucher;
+                    }
+                }
+            }
+
+            return shoesPayments;
         }
     }
 }
