@@ -15,9 +15,11 @@ namespace FlyShoes.BL.Base
     public class OrderShoesBL : BaseBL<OrderShoes>,IOrderShoesBL
     {
         IFirestoreService _firstoreService;
-        public OrderShoesBL(IDatabaseService databaseService,IFirestoreService firestoreService) : base(databaseService)
+        IEmailService _emailService;
+        public OrderShoesBL(IDatabaseService databaseService,IFirestoreService firestoreService, IEmailService emailService) : base(databaseService)
         {
             _firstoreService = firestoreService;
+            _emailService = emailService;
         }
 
         public async Task<List<OrderShoes>> GetOrdersByUser()
@@ -152,6 +154,122 @@ namespace FlyShoes.BL.Base
             _ = _firstoreService.PushNotification(notification).ConfigureAwait(false);
 
             return result;
+        }
+
+        public async Task<int> UpdateOrderStatus(int orderShoesID,OrderStatus orderStatus)
+        {
+            var updateOrder = "UPDATE OrderShoes SET Status = @Status WHERE OrderID = @OrderShoesID";
+            var param = new Dictionary<string, object>()
+            {
+                {"@Status",orderStatus },
+                {"@OrderShoesID",orderShoesID }
+            };
+
+            var connection = _dataBaseService.GetDbConnection();
+            connection.Open();
+            var transaction = connection.BeginTransaction();
+            var order = await GetByID(orderShoesID.ToString());
+            var commandGetUser = $"SELECT * FROM User WHERE UserID = @UserID";
+            var user = await _dataBaseService.QuerySingleUsingCommanTextAsync<User>(commandGetUser, new Dictionary<string, object>() { { "@UserID", order.UserID } });
+            var res = await _dataBaseService.ExecuteUsingCommandTextAsync(updateOrder, param, transaction, connection);
+
+            if (res > 0 && orderStatus == OrderStatus.Cancel)
+            {
+                /// lay order
+                /// lay order detail
+                /// Hoan lai so luong
+                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder stringUpdateVoucher = new StringBuilder();
+
+                var indexUpdateQuantity = 0;
+                var quantityVoucher = 0;
+                var paramUpdateQuantity = new Dictionary<string, object>();
+                var paramUpdateVoucher = new Dictionary<string, object>() {
+                    {"@Now",System.DateTime.Now }
+                };
+
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    stringBuilder.Append($"UPDATE ShoesDetail SET Quantity = Quantity + @Quantity_{indexUpdateQuantity} WHERE ShoesDetailID = @ShoesDetailID_{indexUpdateQuantity};");
+                    paramUpdateQuantity.Add($"@Quantity_{indexUpdateQuantity}", orderDetail.Quantity);
+                    paramUpdateQuantity.Add($"@ShoesDetailID_{indexUpdateQuantity}", orderDetail.ShoesDetailID);
+                    indexUpdateQuantity++;
+
+                    if (orderDetail.VoucherID != null)
+                    {
+                        stringUpdateVoucher.Append($"UPDATE Voucher SET Quantity = Quantity + 1 WHERE VoucherID = @VoucherID_{indexUpdateQuantity} AND IsActive IS TRUE AND EndDate > @Now");
+                        quantityVoucher++;
+                        paramUpdateVoucher.Add($"VoucherID_{indexUpdateQuantity}", orderDetail.VoucherID);
+                    }
+                }
+                var resUpdateQuantity = await _dataBaseService.ExecuteUsingCommandTextAsync(stringBuilder.ToString(), paramUpdateQuantity, transaction, connection);
+                if (quantityVoucher > 0)
+                {
+                    _ = _dataBaseService.ExecuteUsingCommandTextAsync(stringUpdateVoucher.ToString(), param);
+                }
+
+                if (resUpdateQuantity != order.OrderDetails.Count)
+                {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                    connection.Close();
+                    return 0;
+                }
+
+                var updateUser = $"UPDATE User SET AmountSpent = AmountSpent - @TotalBill WHERE UserID = @UserID";
+                var resUpdateUser = await _dataBaseService.ExecuteUsingCommandTextAsync(updateUser, new Dictionary<string, object>() { { @"TotalBill", order.TotalBill }, { "@UserID", order.UserID } }, transaction, connection);
+                if (resUpdateUser == 0)
+                {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                    connection.Close();
+                    return 0;
+                }
+                /// Giam tien cho
+            }
+
+            _ = SendMailNotifyOrderStatus(orderStatus, user);
+
+            transaction.Commit();
+            transaction.Dispose();
+            connection.Close();
+            return res;
+        }
+
+        private async Task SendMailNotifyOrderStatus(OrderStatus orderStatus, User user)
+        {
+            var textStatus = "";
+            switch (orderStatus)
+            {
+                case OrderStatus.Pending:
+                    break;
+                case OrderStatus.Success:
+                    textStatus = "thành công";
+                    break;
+                case OrderStatus.Confirm:
+                    textStatus = "được xác nhận";
+                    break;
+                case OrderStatus.Cancel:
+                    textStatus = "bị hủy";
+                    break;
+            }
+
+            if (textStatus.Equals("")) return;
+            var emilNotification = new FlyEmail()
+            {
+                EmailContent = $"Xin chào <b>{user.FullName}</b><br>Chúng tôi xin thông báo đơn hàng của bạn đã {textStatus}.",
+                To = user.Email,
+                Subject = "Fly Shoes thông báo trạng thái đơn hàng",
+            };
+
+            await _emailService.SendMail(emilNotification);
+
+            var notification = new Notification()
+            {
+                UserID = user.UserID,
+                Message = $"Đơn hàng của bạn đã {textStatus} ❤️"
+            };
+            _ = _firstoreService.PushNotification(notification);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace FlyShoes.API.Controllers
             user.IsAdmin = false;
             user.AmountSpent = 0;
             user.State = ModelStateEnum.Insert;
+            user.IsUsePassword = true;
 
             await _userBL.Save(user);
             var users = await _userBL.GetByField("FirebaseID", user.FirebaseID);

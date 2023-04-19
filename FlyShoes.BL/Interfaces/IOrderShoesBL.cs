@@ -14,5 +14,7 @@ namespace FlyShoes.BL.Interfaces
         public Task<ServiceResponse> Order(int paymentType, OrderShoes orderShoes);
 
         public Task<List<OrderShoes>> GetOrdersByUser();
+
+        public Task<int> UpdateOrderStatus(int orderShoesID,OrderStatus orderStatus);
     }
 }

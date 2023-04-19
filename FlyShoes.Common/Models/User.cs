@@ -36,5 +36,6 @@ namespace FlyShoes.Common.Models
 
         [AllowUpdateSingle]
         public bool ReceiveEmail { get; set; }
+        public bool IsUsePassword { get; set; }
     }
 }

@@ -31,27 +31,33 @@ namespace FlyShoes.BL.Implements
         public override void AfterSave(object entity, IDbConnection connection, IDbTransaction transaction)
         {
             base.AfterSave(entity, connection, transaction);
-            SendMailNotification();
+            _ = SendMailNotification();
 
             InsertShoesDetail(entity, connection, transaction);
         }
 
-        private void SendMailNotification()
+        private async Task SendMailNotification()
         {
-            //var commandGetUser = "SELECT DISTINCT u.Email FROM User u WHERE u.IsReceiveEmailNewShoes IS TRUE;";
-            //var emails = _dataBaseService.QueryUsingCommanText<string>(commandGetUser);
-            //if(emails != null && emails.Count > 0)
-            //{
-            //    var emailSend = new FlyEmail()
-            //    {
-            //        From = "mhung.haui.webdev@gmail.com",
-            //        Cc = emails,
-            //        EmailContent = "Chúng tôi có sản phẩm mới ! Hãy nhanh tay sở hữu",
-            //        Subject = "Fly Shoes - Thông báo sản phẩm mới",
-            //        To = "mahhugcoder@gmail.com"
-            //    };
-            //    _emailService.SendMail(emailSend);
-            //}
+            var commandGetUser = "SELECT DISTINCT u.Email FROM User u WHERE u.ReceiveEmail IS TRUE;";
+            var emails = _dataBaseService.QueryUsingCommanText<string>(commandGetUser);
+            if (emails != null && emails.Count > 0)
+            {
+                var emailSend = new FlyEmail()
+                {
+                    From = "mhung.haui.webdev@gmail.com",
+                    EmailContent = "Chúng tôi có sản phẩm mới ! Hãy nhanh tay sở hữu",
+                    Subject = "Fly Shoes - Thông báo sản phẩm mới",
+                    To = emails.FirstOrDefault()
+                };
+
+                if(emails.Count > 1)
+                {
+                    emails.RemoveAt(0);
+                    emailSend.Cc = emails;
+                }
+
+                _emailService.SendMail(emailSend);
+            }
         }
 
         private void InsertShoesDetail(object entity, IDbConnection connection, IDbTransaction transaction)

@@ -22,6 +22,7 @@ namespace FlyShoes.Common.Models
         [Required]
         public string ReceiverAddress { get; set; }
         [NotMap]
+        [Detail("SELECT * FROM OrderDetail WHERE OrderID = @MasterID", "OrderDetails",typeof(List<OrderDetail>))]
         public List<OrderDetail> OrderDetails { get; set; }
 
         public decimal TotalBill { get; set; }

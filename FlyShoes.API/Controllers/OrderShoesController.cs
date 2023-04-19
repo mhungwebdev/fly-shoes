@@ -37,5 +37,18 @@ namespace FlyShoes.API.Controllers
 
             return result;
         }
+
+        [HttpPost("update-order-status")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = RoleTypeConstant.ADMIN)]
+        public async Task<ServiceResponse> UpdateOrderStatus([FromBody]Dictionary<string,object> orderInfor)
+        {
+            var result = new ServiceResponse();
+
+            var orderID = orderInfor.GetValue<int>("OrderShoesID");
+            var orderStatus = orderInfor.GetValue<OrderStatus>("OrderStatus");
+            result.Success = await _orderShoesBL.UpdateOrderStatus(orderID,orderStatus) > 0;
+
+            return result;
+        }
     }
 }

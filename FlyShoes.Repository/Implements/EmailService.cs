@@ -38,12 +38,16 @@ namespace FlyShoes.DAL.Implements
         {
             OpenConnect();
             var emailMessage = new MimeMessage();
+            var from = string.IsNullOrEmpty(fsEmail.From) ? "mhung.haui.webdev@gmail.com" : fsEmail.From;
 
-            emailMessage.From.Add(MailboxAddress.Parse(fsEmail.From));
+            emailMessage.From.Add(MailboxAddress.Parse(from));
             emailMessage.To.Add (MailboxAddress.Parse(fsEmail.To));
-            foreach(var cc in fsEmail.Cc)
+            if(fsEmail.Cc != null && fsEmail.Cc.Count > 0)
             {
-                emailMessage.Cc.Add (MailboxAddress.Parse(cc));
+                foreach(var cc in fsEmail.Cc)
+                {
+                    emailMessage.Cc.Add (MailboxAddress.Parse(cc));
+                }
             }
             emailMessage.Subject = fsEmail.Subject;
             emailMessage.Body = new TextPart("html") { Text = fsEmail.EmailContent };
