@@ -16,10 +16,15 @@ namespace FlyShoes.BL.Base
     {
         IFirestoreService _firstoreService;
         IEmailService _emailService;
-        public OrderShoesBL(IDatabaseService databaseService,IFirestoreService firestoreService, IEmailService emailService) : base(databaseService)
+        IPaymentInfoBL _paymentInfoBL;
+        IVNPayService _vnpayService;
+
+        public OrderShoesBL(IVNPayService vnpayService, IPaymentInfoBL paymentInfoBL,IDatabaseService databaseService,IFirestoreService firestoreService, IEmailService emailService) : base(databaseService)
         {
             _firstoreService = firestoreService;
             _emailService = emailService;
+            _paymentInfoBL= paymentInfoBL;
+            _vnpayService = vnpayService;
         }
 
         public async Task<List<OrderShoes>> GetOrdersByUser()
@@ -142,6 +147,7 @@ namespace FlyShoes.BL.Base
             }
 
             result.Success = true;
+            result.Data = id;
             transaction.Commit();
             transaction.Dispose();
             connection.Close();
@@ -149,7 +155,8 @@ namespace FlyShoes.BL.Base
             var notification = new Notification()
             {
                 UserID = _dataBaseService.CurrentUser.UserID,
-                Message = "Đơn hàng của bạn đã được tạo và đang chờ duyệt, cảm ơn bạn đã ủng hộ shop ❤️"
+                Message = "Đơn hàng của bạn đã được tạo và đang chờ duyệt, cảm ơn bạn đã ủng hộ shop ❤️",
+                SortOrder = System.DateTime.Now.Ticks,
             };
             _ = _firstoreService.PushNotification(notification).ConfigureAwait(false);
 
@@ -172,6 +179,24 @@ namespace FlyShoes.BL.Base
             var commandGetUser = $"SELECT * FROM User WHERE UserID = @UserID";
             var user = await _dataBaseService.QuerySingleUsingCommanTextAsync<User>(commandGetUser, new Dictionary<string, object>() { { "@UserID", order.UserID } });
             var res = await _dataBaseService.ExecuteUsingCommandTextAsync(updateOrder, param, transaction, connection);
+
+            if(order.PaymentMethod == PaymentMethod.VNPay && order.PaymentStatus)
+            {
+                var resPaymentInfo = await _paymentInfoBL.GetByField("OrderID",order.OrderID.ToString());
+                var paymentInfo = resPaymentInfo.FirstOrDefault();
+
+                if(paymentInfo != null)
+                {
+                    var vnpay = new VNPayLibrary();
+                    vnpay.AddResponseData("vnp_Amount", paymentInfo.Amount);
+                    vnpay.AddResponseData("vnp_TxnRef", paymentInfo.OrderID.ToString());
+                    vnpay.AddResponseData("vnp_TransactionNo", paymentInfo.TransactionNo);
+                    vnpay.AddResponseData("vnp_BankCode", paymentInfo.BankCode);
+
+                    _ = _vnpayService.Refund(vnpay);
+                    _ = _paymentInfoBL.Delete(paymentInfo.PaymentInfoID.ToString());
+                }
+            }
 
             if (res > 0 && orderStatus == OrderStatus.Cancel)
             {
@@ -267,7 +292,8 @@ namespace FlyShoes.BL.Base
             var notification = new Notification()
             {
                 UserID = user.UserID,
-                Message = $"Đơn hàng của bạn đã {textStatus} ❤️"
+                Message = $"Đơn hàng của bạn đã {textStatus} ❤️",
+                SortOrder = System.DateTime.Now.Ticks
             };
             _ = _firstoreService.PushNotification(notification);
         }

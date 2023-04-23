@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Enums
 {
-    public enum StorageType
+    public enum PaymentMethod
     {
-        Product = 1,
-        DMDom = 2
+        ReceiveProduct = 1,
+        VNPay = 2
     }
 }

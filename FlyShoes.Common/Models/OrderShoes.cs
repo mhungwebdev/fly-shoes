@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FlyShoes.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,5 +27,12 @@ namespace FlyShoes.Common.Models
         public List<OrderDetail> OrderDetails { get; set; }
 
         public decimal TotalBill { get; set; }
+
+        public PaymentMethod PaymentMethod { get; set; }
+
+        public bool PaymentStatus { get; set; }
+
+        [NotMap]
+        public string BankCode { get; set; }
     }
 }

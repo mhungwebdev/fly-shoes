@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Enums
 {
-    public enum StorageType
+    public enum TabAnalyst
     {
-        Product = 1,
-        DMDom = 2
+        Order = 1,
+        Product = 2,
+        InCome = 3,
+        Customer = 4
     }
 }

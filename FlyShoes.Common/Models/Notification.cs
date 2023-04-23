@@ -16,6 +16,7 @@ namespace FlyShoes.Common.Models
 
         public string Link { get; set; }
 
+        public decimal SortOrder { get; set; }
 
         public Notification()
         {

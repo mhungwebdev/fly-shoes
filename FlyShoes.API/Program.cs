@@ -37,6 +37,9 @@ builder.Services.AddScoped<IShoesDetailBL, ShoesDetailBL>();
 builder.Services.AddScoped<ISizeBL, SizeBL>();
 builder.Services.AddScoped<IUserBL, UserBL>();
 builder.Services.AddScoped<IVoucherBL, VoucherBL>();
+builder.Services.AddScoped<IVNPayService, VNPayService>();
+builder.Services.AddScoped<IPaymentInfoBL, PaymentInfoBL>();
+builder.Services.AddScoped<IReportBL, ReportBL>();
 builder.Services.AddScoped(typeof(IBaseBL<>), typeof(BaseBL<>));
 
 
