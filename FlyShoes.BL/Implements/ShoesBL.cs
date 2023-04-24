@@ -132,20 +132,23 @@ namespace FlyShoes.BL.Implements
                     shoesPayment.ShoesDetails = _dataBaseService.QueryUsingCommanText<ShoesDetail>(getShoesDetail, param);
                 }
 
-                var commandGetVoucher = "SELECT * FROM Voucher v WHERE v.VoucherID IN ({0}) AND v.VoucherID NOT IN(SELECT vu.VoucherID FROM VoucherUsed vu WHERE vu.VoucherID IN ({1}) AND vu.UserID = @UserID) AND v.IsActive IS TRUE AND v.EndDate > @NOW AND v.Quantity > 0;";
-                commandGetVoucher = string.Format(commandGetVoucher, string.Join(",", idVouchers), string.Join(",", idVouchers));
-                var paramGetVoucher = new Dictionary<string, object>() {
-                    { "@UserID", userID },
-                    {"@NOW",DateTime.Now }
-                };
-                var vouchers = _dataBaseService.QueryUsingCommanText<Voucher>(commandGetVoucher, paramGetVoucher);
-
-                if (vouchers != null && vouchers.Count > 0)
+                if(idVouchers.Count > 0)
                 {
-                    foreach (var s in shoesPayments)
+                    var commandGetVoucher = "SELECT * FROM Voucher v WHERE v.VoucherID IN ({0}) AND v.VoucherID NOT IN(SELECT vu.VoucherID FROM VoucherUsed vu WHERE vu.VoucherID IN ({1}) AND vu.UserID = @UserID) AND v.IsActive IS TRUE AND v.EndDate > @NOW AND v.Quantity > 0;";
+                    commandGetVoucher = string.Format(commandGetVoucher, string.Join(",", idVouchers), string.Join(",", idVouchers));
+                    var paramGetVoucher = new Dictionary<string, object>() {
+                        { "@UserID", userID },
+                        {"@NOW",DateTime.Now }
+                    };
+                    var vouchers = _dataBaseService.QueryUsingCommanText<Voucher>(commandGetVoucher, paramGetVoucher);
+
+                    if (vouchers != null && vouchers.Count > 0)
                     {
-                        var voucher = vouchers.Find(voucher => voucher.VoucherID == s.VoucherID);
-                        s.Voucher = voucher;
+                        foreach (var s in shoesPayments)
+                        {
+                            var voucher = vouchers.Find(voucher => voucher.VoucherID == s.VoucherID);
+                            s.Voucher = voucher;
+                        }
                     }
                 }
             }

@@ -26,15 +26,16 @@ namespace FlyShoes.API.Controllers
         IConfigurationSection _vnpConfig;
         IVNPayService _vnpayService;
         IPaymentInfoBL _paymentInfoBL;
+        IFirestoreService _firestoreService;
 
-
-        public OrderShoesController(IOrderShoesBL orderBL,IDatabaseService databaseService, IConfiguration configuration,IPaymentInfoBL paymentInfoBL,IVNPayService vNPayService) :base(orderBL)
+        public OrderShoesController(IOrderShoesBL orderBL,IFirestoreService firestoreService, IDatabaseService databaseService, IConfiguration configuration,IPaymentInfoBL paymentInfoBL,IVNPayService vNPayService) :base(orderBL)
         {
             _orderShoesBL= orderBL;
             _databaseBL= databaseService;
             _vnpConfig = configuration.GetSection("VNPay");
             _vnpayService = vNPayService;
             _paymentInfoBL = paymentInfoBL;
+            _firestoreService = firestoreService;
         }
 
         [HttpPost("order/{paymentType}")]
@@ -124,6 +125,16 @@ namespace FlyShoes.API.Controllers
                         };
 
                         _ = _paymentInfoBL.Save(paymentInfo);
+
+                        var commandGetUserID = "SELECT UserID FROM OrderShoes WHERE OrderID = @OrderID";
+
+                        var userID = _databaseBL.ExecuteScalarUsingCommandText<int>(commandGetUserID, new Dictionary<string, object> { { "@OrderID", orderID } });
+
+                        _ = _firestoreService.PushNotification(new Notification()
+                        {
+                            UserID = userID,
+                            Message = "Đơn hàng của bạn đã được thanh toán thành công ❤️"
+                        });
 
                         return Ok("Thanh toán thành công ! Cảm ơn quý khách");
                     }
