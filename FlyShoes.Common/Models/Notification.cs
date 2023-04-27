@@ -12,12 +12,6 @@ namespace FlyShoes.Common.Models
 
         public string Message { get; set; }
 
-        public bool IsRead { get; set; }
-
-        public string Link { get; set; }
-
-        public decimal SortOrder { get; set; }
-
         public Notification()
         {
         }

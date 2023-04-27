@@ -20,27 +20,27 @@ using System.Text.Json.Serialization;
 using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<IFirebaseAuthClient, FirebaseAuthService>();
-builder.Services.AddScoped<IDatabaseService, DatabaseService>();
-builder.Services.AddScoped<IStorageService, StorageService>();
-builder.Services.AddScoped<IFirestoreService, FirestoreService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IBrandBL, BrandBL>();
-builder.Services.AddScoped<ICartDetailBL, CartDetailBL>();
-builder.Services.AddScoped<ICategoryBL, CategoryBL>();
-builder.Services.AddScoped<IColorBL, ColorBL>();
-builder.Services.AddScoped<IEmailTemplateBL, EmailTemplateBL>();
-builder.Services.AddScoped<IOrderShoesBL, OrderShoesBL>();
-builder.Services.AddScoped<IOrderDetailBL, OrderDetailBL>();
-builder.Services.AddScoped<IShoesBL, ShoesBL>();
-builder.Services.AddScoped<IShoesDetailBL, ShoesDetailBL>();
-builder.Services.AddScoped<ISizeBL, SizeBL>();
-builder.Services.AddScoped<IUserBL, UserBL>();
-builder.Services.AddScoped<IVoucherBL, VoucherBL>();
-builder.Services.AddScoped<IVNPayService, VNPayService>();
-builder.Services.AddScoped<IPaymentInfoBL, PaymentInfoBL>();
-builder.Services.AddScoped<IReportBL, ReportBL>();
-builder.Services.AddScoped(typeof(IBaseBL<>), typeof(BaseBL<>));
+builder.Services.AddTransient<IFirebaseAuthClient, FirebaseAuthService>();
+builder.Services.AddTransient<IDatabaseService, DatabaseService>();
+builder.Services.AddTransient<IStorageService, StorageService>();
+builder.Services.AddTransient<IFirestoreService, FirestoreService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IBrandBL, BrandBL>();
+builder.Services.AddTransient<ICartDetailBL, CartDetailBL>();
+builder.Services.AddTransient<ICategoryBL, CategoryBL>();
+builder.Services.AddTransient<IColorBL, ColorBL>();
+builder.Services.AddTransient<IEmailTemplateBL, EmailTemplateBL>();
+builder.Services.AddTransient<IOrderShoesBL, OrderShoesBL>();
+builder.Services.AddTransient<IOrderDetailBL, OrderDetailBL>();
+builder.Services.AddTransient<IShoesBL, ShoesBL>();
+builder.Services.AddTransient<IShoesDetailBL, ShoesDetailBL>();
+builder.Services.AddTransient<ISizeBL, SizeBL>();
+builder.Services.AddTransient<IUserBL, UserBL>();
+builder.Services.AddTransient<IVoucherBL, VoucherBL>();
+builder.Services.AddTransient<IVNPayService, VNPayService>();
+builder.Services.AddTransient<IPaymentInfoBL, PaymentInfoBL>();
+builder.Services.AddTransient<IReportBL, ReportBL>();
+builder.Services.AddTransient(typeof(IBaseBL<>), typeof(BaseBL<>));
 
 
 // Add services to the container.

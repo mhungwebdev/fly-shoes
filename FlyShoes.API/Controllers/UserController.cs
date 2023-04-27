@@ -35,8 +35,7 @@ namespace FlyShoes.API.Controllers
             {
                 IsRead = false,
                 Message = "Chào mừng bạn đến với Fly Shoes.",
-                UserID = users.FirstOrDefault().UserID,
-                SortOrder = DateTime.Now.Ticks
+                UserID = users.FirstOrDefault().UserID
             });
 
             result.Data = users;
@@ -65,8 +64,7 @@ namespace FlyShoes.API.Controllers
                 {
                     IsRead = false,
                     Message = "Chào mừng bạn đến với Fly Shoes.",
-                    UserID = users.FirstOrDefault().UserID,
-                    SortOrder = DateTime.Now.Ticks
+                    UserID = users.FirstOrDefault().UserID
                 });
                 result.Data = users;
             }

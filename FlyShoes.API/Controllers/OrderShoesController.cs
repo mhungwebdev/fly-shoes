@@ -130,12 +130,6 @@ namespace FlyShoes.API.Controllers
 
                         var userID = _databaseBL.ExecuteScalarUsingCommandText<int>(commandGetUserID, new Dictionary<string, object> { { "@OrderID", orderID } });
 
-                        _ = _firestoreService.PushNotification(new Notification()
-                        {
-                            UserID = userID,
-                            Message = "Đơn hàng của bạn đã được thanh toán thành công ❤️"
-                        });
-
                         return Ok("Thanh toán thành công ! Cảm ơn quý khách");
                     }
                     else

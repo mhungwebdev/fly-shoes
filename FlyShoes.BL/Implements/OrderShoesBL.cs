@@ -155,8 +155,7 @@ namespace FlyShoes.BL.Base
             var notification = new Notification()
             {
                 UserID = _dataBaseService.CurrentUser.UserID,
-                Message = "Đơn hàng của bạn đã được tạo và đang chờ duyệt, cảm ơn bạn đã ủng hộ shop ❤️",
-                SortOrder = System.DateTime.Now.Ticks,
+                Message = "Đơn hàng của bạn đã được tạo và đang chờ duyệt, cảm ơn bạn đã ủng hộ shop ❤️"
             };
             _ = _firstoreService.PushNotification(notification).ConfigureAwait(false);
 
@@ -292,8 +291,7 @@ namespace FlyShoes.BL.Base
             var notification = new Notification()
             {
                 UserID = user.UserID,
-                Message = $"Đơn hàng của bạn đã {textStatus} ❤️",
-                SortOrder = System.DateTime.Now.Ticks
+                Message = $"Đơn hàng của bạn đã {textStatus} ❤️"
             };
             _ = _firstoreService.PushNotification(notification);
         }
