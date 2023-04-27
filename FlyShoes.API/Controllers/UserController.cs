@@ -33,7 +33,6 @@ namespace FlyShoes.API.Controllers
             var users = await _userBL.GetByField("FirebaseID", user.FirebaseID);
             await _firestoreService.PushNotification(new Notification()
             {
-                IsRead = false,
                 Message = "Chào mừng bạn đến với Fly Shoes.",
                 UserID = users.FirstOrDefault().UserID
             });
@@ -62,7 +61,6 @@ namespace FlyShoes.API.Controllers
                 var users = await _userBL.GetByField("FirebaseID", user.FirebaseID);
                 await _firestoreService.PushNotification(new Notification()
                 {
-                    IsRead = false,
                     Message = "Chào mừng bạn đến với Fly Shoes.",
                     UserID = users.FirstOrDefault().UserID
                 });
