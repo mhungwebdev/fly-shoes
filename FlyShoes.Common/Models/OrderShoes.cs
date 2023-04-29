@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FlyShoes.Common.Models
 {
-    [ConfigTable(tableName:"OrderShoes")]
+    [ConfigTable(tableName:"OrderShoes",fieldSearch: "ReceiverName;ReceiverPhone;ReceiverAddress")]
     public class OrderShoes : BaseModel
     {
         [PrimaryKey]

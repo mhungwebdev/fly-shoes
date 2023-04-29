@@ -35,7 +35,7 @@ namespace FlyShoes.DAL.Implements
             var serializedParticipant = JsonConvert.SerializeObject(notification);
             var deserializedParticipant = JsonConvert.DeserializeObject<ExpandoObject>(serializedParticipant);
 
-            var res = await _notification.AddAsync(deserializedParticipant);
+            await _notification.AddAsync(deserializedParticipant);
         }
     }
 }

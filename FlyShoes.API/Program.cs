@@ -23,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IFirebaseAuthClient, FirebaseAuthService>();
 builder.Services.AddScoped<IDatabaseService, DatabaseService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
-builder.Services.AddScoped<IFirestoreService, FirestoreService>();
+builder.Services.AddTransient<IFirestoreService, FirestoreService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBrandBL, BrandBL>();
 builder.Services.AddScoped<ICartDetailBL, CartDetailBL>();

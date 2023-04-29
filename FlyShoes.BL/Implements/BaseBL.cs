@@ -219,7 +219,7 @@ namespace FlyShoes.BL
 
             foreach(var fieldSearch in _fieldSearchs)
             {
-                result += $"{fieldSearch} LIKE '%{keyword}%' OR";
+                result += $" {fieldSearch} LIKE '%{keyword}%' OR";
             }
 
             result = result.Substring(0,result.Length - 3) + ")";
@@ -230,8 +230,13 @@ namespace FlyShoes.BL
         public string BuildWhereClause(List<FilterColumn> filterColumns)
         {
             if (filterColumns == null || filterColumns.Count == 0) return null;
-            
-            var result = "(";
+            var filterOperatorWithNull = new List<FilterOperator>() { FilterOperator.EqualNull , FilterOperator.NotEqualNull };
+
+            var result = "";
+            if(filterColumns.Where(filterColumn => (!filterOperatorWithNull.Contains(filterColumn.FilterOperator) && filterColumn.Value != null) || filterOperatorWithNull.Contains(filterColumn.FilterOperator)).ToList().Count > 0)
+            {
+                result = "(";
+            }
 
             foreach(var filterColumn in filterColumns)
             {
@@ -240,26 +245,26 @@ namespace FlyShoes.BL
                     if(filterColumn.Value != null)
                     {
                         switch (filterColumn.FilterOperator)
-                    {
-                        case Common.Enums.FilterOperator.Equal:
-                            result += $"({filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                            break;
-                        case Common.Enums.FilterOperator.NotEqual:
-                            result += $"({filterColumn.FieldName} <> {filterColumn.Value}) AND ";
-                            break;
-                        case Common.Enums.FilterOperator.Greater:
-                            result += $"({filterColumn.FieldName} > {filterColumn.Value}) AND ";
-                            break;
-                        case Common.Enums.FilterOperator.Less:
-                            result += $"({filterColumn.FieldName} < {filterColumn.Value}) AND ";
-                            break;
-                        case Common.Enums.FilterOperator.GreaterOrEqual:
-                            result += $"({filterColumn.FieldName} > {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                            break;
-                        case Common.Enums.FilterOperator.LessOrEqual:
-                            result += $"({filterColumn.FieldName} < {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
-                            break;
-                    }
+                        {
+                            case Common.Enums.FilterOperator.Equal:
+                                result += $"({filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                                break;
+                            case Common.Enums.FilterOperator.NotEqual:
+                                result += $"({filterColumn.FieldName} <> {filterColumn.Value}) AND ";
+                                break;
+                            case Common.Enums.FilterOperator.Greater:
+                                result += $"({filterColumn.FieldName} > {filterColumn.Value}) AND ";
+                                break;
+                            case Common.Enums.FilterOperator.Less:
+                                result += $"({filterColumn.FieldName} < {filterColumn.Value}) AND ";
+                                break;
+                            case Common.Enums.FilterOperator.GreaterOrEqual:
+                                result += $"({filterColumn.FieldName} > {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                                break;
+                            case Common.Enums.FilterOperator.LessOrEqual:
+                                result += $"({filterColumn.FieldName} < {filterColumn.Value} OR {filterColumn.FieldName} = {filterColumn.Value}) AND ";
+                                break;
+                        }
                     }
                 }
                 else
@@ -267,10 +272,13 @@ namespace FlyShoes.BL
                     var not = filterColumn.FilterOperator == FilterOperator.NotEqualNull ? "NOT" : "";
                     result += $"({filterColumn.FieldName} IS {not} NULL) AND ";
                 }
-
             }
-            result = result.Substring(0, result.Length - 5);
-            result += ")";
+
+            if(result.Length > 6)
+            {
+                result = result.Substring(0, result.Length - 5);
+                result += ")";
+            }
 
             return result;
         }

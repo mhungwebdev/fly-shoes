@@ -32,7 +32,7 @@ namespace FlyShoes.API.Controllers
         {
             var result = new ServiceResponse();
             var shoes = await _shoesBL.Paging(pagingPayload);
-            var idVouchers = shoes.Where(s => s.VoucherID != null)?.Select(s => s.VoucherID).ToList();
+            var idVouchers = shoes.Where(s => s.VoucherID != null)?.Select(s => s.VoucherID)?.Distinct().ToList();
             var idShoesRemove = new List<int?>();
 
             if (shoes != null && shoes.Count > 0 && idVouchers != null && idVouchers.Count > 0)

@@ -34,5 +34,16 @@ namespace FlyShoes.API.Controllers
 
             return result;
         }
+
+        [HttpGet("today")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = RoleTypeConstant.ADMIN)]
+        public async Task<ServiceResponse> AnalystToDay()
+        {
+            var result = new ServiceResponse();
+
+            result.Data = await _reportBL.AnalystToDay();
+
+            return result;
+        }
     }
 }
