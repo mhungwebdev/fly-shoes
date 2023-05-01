@@ -65,7 +65,11 @@ namespace FlyShoes.BL.Implements
                 case TimeToAnalyst.LastWeek:
                     param.Remove("v_Monday");
                     param.Remove("v_Sunday");
+                    param.Remove("v_Month");
+                    param.Remove("v_Year");
                     var lastWeek = now.AddDays(-7);
+                    param.Add("v_Month", lastWeek.Month);
+                    param.Add("v_Year", lastWeek.Year);
                     var dayOfLastWeek = (int)lastWeek.DayOfWeek;
                     var numberMondayLastWeek = dayOfLastWeek == (int)DayOfWeek.Sunday ? -6 : dayOfLastWeek - 1;
                     var numberSundayLastWeek = dayOfLastWeek == (int)DayOfWeek.Sunday ? 0 : 7 - dayOfLastWeek;
