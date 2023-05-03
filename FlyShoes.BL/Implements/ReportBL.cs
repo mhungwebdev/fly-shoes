@@ -57,7 +57,7 @@ namespace FlyShoes.BL.Implements
                     var dayOfWeek = (int)now.DayOfWeek;
                     param.Remove("v_Monday");
                     param.Remove("v_Sunday");
-                    var numberMonday = dayOfWeek == (int)DayOfWeek.Sunday ? -6 : dayOfWeek - 1;
+                    var numberMonday = dayOfWeek == (int)DayOfWeek.Sunday ? -6 : -(dayOfWeek - 1);
                     var numberSunday = dayOfWeek == (int)DayOfWeek.Sunday ? 0 : 7 - dayOfWeek;
                     param.Add("v_Monday", now.AddDays(numberMonday).Day);
                     param.Add("v_Sunday", now.AddDays(numberSunday).Day);
@@ -71,7 +71,7 @@ namespace FlyShoes.BL.Implements
                     param.Add("v_Month", lastWeek.Month);
                     param.Add("v_Year", lastWeek.Year);
                     var dayOfLastWeek = (int)lastWeek.DayOfWeek;
-                    var numberMondayLastWeek = dayOfLastWeek == (int)DayOfWeek.Sunday ? -6 : dayOfLastWeek - 1;
+                    var numberMondayLastWeek = dayOfLastWeek == (int)DayOfWeek.Sunday ? -6 : -(dayOfLastWeek - 1);
                     var numberSundayLastWeek = dayOfLastWeek == (int)DayOfWeek.Sunday ? 0 : 7 - dayOfLastWeek;
                     param.Add("v_Monday", lastWeek.AddDays(numberMondayLastWeek).Day);
                     param.Add("v_Sunday", lastWeek.AddDays(numberSundayLastWeek).Day);
