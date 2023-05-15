@@ -53,7 +53,7 @@ namespace FlyShoes.DAL.Implements
                 return result;
             }
 
-            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database.");
+            throw new FSException("Truyền cả connection và transaction nếu muốn sử dụng custom luồng tương tác với database");
         }
 
         public async Task<int> ExecuteUsingCommandTextAsync(string commandText, Dictionary<string, object> param = null, IDbTransaction transaction = null, IDbConnection connection = null)
