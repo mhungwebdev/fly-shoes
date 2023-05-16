@@ -40,5 +40,8 @@ namespace FlyShoes.Common.Models
 
         [NotMap]
         public Voucher? Voucher { get; set; }
+
+        [NotMap]
+        public int Total { get; set; }
     }
 }
